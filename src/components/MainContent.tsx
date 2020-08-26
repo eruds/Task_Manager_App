@@ -8,6 +8,7 @@ import MoodIcon from '@material-ui/icons/Mood';
 
 import TodoList from './TodoList'
 import Calendar from './Calendar'
+import MoodTracker from './MoodTracker'
 
 const useStyles = makeStyles({
     root : {
@@ -16,8 +17,8 @@ const useStyles = makeStyles({
         fontFamily : 'Nunito',
         fontWeight : 800
     }, item : {
+        padding : '1.5em 2em !important',
         backgroundColor : '#EDECEE',
-        padding : '1.5em 2em !important'
     }, createColumn : {
         display : 'grid',
         gridTemplateRows : '1fr 5fr',

@@ -4,9 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 
 
-type NavProp = { title : string, link : string}
-type NavProps = { items : NavProp[]}
-
+type NavProp = { title : string, link : string }
 const useStyles = makeStyles({
     root : {
         padding : 0,
@@ -17,7 +15,7 @@ const useStyles = makeStyles({
 })
 
 
-const NavigationBar : React.FC<NavProps> = ({items}) => {
+const NavigationBar : React.FC<{ items : NavProp[] }> = ({items}) => {
 
     const classes = useStyles()
 
