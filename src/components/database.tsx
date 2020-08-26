@@ -1,11 +1,16 @@
 // Import UUID
 import { uuid } from 'uuidv4'
 
+
+type Priority = 'High' | 'Medium' | 'Low' | 'No Priority' | null
+
 type Task = {
     id : string,
     title : string, 
     note : string, 
     tags : string[],
+    priority? : Priority,
+    deadline? : string,
     completed : boolean
 }
 
@@ -21,6 +26,7 @@ const dummyTasks = [
         title : "Revolutionize the working class",
         note : `Testing Note`,
         tags : [],
+        priority : "Medium" as Priority,
         completed : false 
     },{
         id : uuid(), 
@@ -33,9 +39,10 @@ const dummyTasks = [
         title : "Read a book",
         note : `Testing Note`,
         tags : [], 
+        deadline : "Mon Nov 02 2020",
         completed : false 
     }
 ]
 
 export { dummyTasks }
-export type { Task }
+export type { Task, Priority }
