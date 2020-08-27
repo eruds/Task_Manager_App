@@ -54,7 +54,7 @@ const MainContent : React.FC = () => {
                         </Grid>
                     </Grid>
                     <Grid item className={classes.item}>
-                        <TodoList/>
+                        <MoodTracker />
                     </Grid>
                 </Grid>
                 <Grid container item lg={12} xs={12} spacing={2} className={classes.createColumn}>
