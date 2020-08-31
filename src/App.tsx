@@ -1,45 +1,30 @@
 import React from 'react';
-import { Grid } from '@material-ui/core'
+import { Grid, Paper } from '@material-ui/core'
+import { ThemeProvider} from '@material-ui/core/styles'
+import { darkTheme } from './components/Theming'
 // import { createStyles }
 
 //Components
 import NavigationBar from './components/NavigationBar'
 import MainContent from './components/MainContent'
-
-const Navbar = [
-  {
-    title : "Home", 
-    link : "#",
-  },
-  {
-    title : "About", 
-    link : "#",
-  }, 
-  {
-    title : "Login", 
-    link : "#",
-  }
-
-]
+// style={{ backgroundColor : "#353535", color : 'white'}}
 
 
 function App() {
   return (
-    <div className="App" style={{ backgroundColor : "#353535", color : 'white'}}>
-      <Grid container direction="column">
-          <Grid item style={{ marginBottom : '2em'}}>
-            <NavigationBar items={Navbar} />
-          </Grid>
-          <Grid item>
-
-          </Grid>
-          <Grid item>
-            <MainContent />
-          </Grid>
-
-      </Grid>
-        
-    </div>
+    <ThemeProvider theme={darkTheme}>
+      <Paper className="App">
+        <Grid container direction="column">
+            <Grid item style={{ marginBottom : '2em'}}>
+              <NavigationBar />
+            </Grid>
+            <Grid item>
+              <MainContent />
+            </Grid>
+        </Grid>  
+      </Paper>
+    </ThemeProvider>
+    
   );
 }
 

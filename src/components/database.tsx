@@ -72,6 +72,20 @@ const dayNames = [
     "Saturday"
 ]
 
+const dayNamesShortened = dayNames.map( day => {
+  return day.slice(0,3)
+})
+
+const getMonthName = ( num : number ) => {
+  num = num < 0 ? num + 12 : num > 11 ?  num - 12 : num 
+  return calendar[num].monthName
+}
+
+const getMonthDayCount = ( num : number ) => {
+  num = num < 0 ? num + 12 : num > 11 ?  num - 12 : num 
+  return calendar[num].daysCount
+}
+
 // Dummy Tasks to fill up TodoList
 const dummyTasks = [
     {
@@ -103,5 +117,22 @@ const dummyTasks = [
     }
 ]
 
-export { dummyTasks, calendar, dayNames }
-export type { Task, Priority }
+type NavStateItem = { title : string, link : string }
+const NavbarItems : NavStateItem[] = [
+  {
+    title : "Home", 
+    link : "#",
+  },
+  {
+    title : "About", 
+    link : "#",
+  }, 
+  {
+    title : "Login", 
+    link : "#",
+  }
+
+]
+
+export { dummyTasks, calendar, dayNames, dayNamesShortened, getMonthName, getMonthDayCount, NavbarItems }
+export type { Task, Priority, NavStateItem  }

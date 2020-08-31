@@ -1,10 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { AppBar, Toolbar, Typography, Tabs, Tab, Container } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
+import { NavbarItems, NavStateItem } from './database'
 
-
-type NavProp = { title : string, link : string }
 const useStyles = makeStyles({
     root : {
         padding : 0,
@@ -15,17 +14,18 @@ const useStyles = makeStyles({
 })
 
 
-const NavigationBar : React.FC<{ items : NavProp[] }> = ({items}) => {
+const NavigationBar : React.FC = () => {
 
     const classes = useStyles()
+    const [Items, setItems] = useState<NavStateItem[]>(NavbarItems)
 
     return (
-        <AppBar position="static" color="transparent">
+        <AppBar position="static" style={{ backgroundColor : "#212121"}}>
             <Container>    
                 <Toolbar className={classes.root}>
                     <Typography variant="h5" className={classes.title}> Ikigai App </Typography>
                         <Tabs>
-                            { items.map((item : NavProp, index : number)  => {
+                            { Items.map((item : NavStateItem, index : number)  => {
                                 return (
                                     <Tab label={item.title} href={item.link}/>
                                 )

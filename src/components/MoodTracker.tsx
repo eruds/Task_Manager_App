@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/styles'
+import React from 'react'
+import { UseMainClasses } from './Theming'
+
+
 import { Typography, TextField, Grid, IconButton } from '@material-ui/core'
 import {Line} from 'react-chartjs-2';
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
@@ -13,8 +15,8 @@ const data = {
     datasets: [
       {
         label: 'Mood',
-        fill: false,
-        lineTension: 0.1,
+        fill: true,
+        lineTension: 0.2,
         backgroundColor: 'rgba(75,192,192,0.4)',
         borderColor: 'rgba(75,192,192,1)',
         borderCapStyle: 'butt',
@@ -37,42 +39,39 @@ const data = {
   
 
 const MoodTracker = () => {
+    const mainClasses = UseMainClasses()
     return (
         <div>
-            <Typography variant="h4" style={{ color : 'black',}}>Last 7 Days</Typography>
-            <Line data={data}/>
-            <Typography variant="h6" style={{ color : 'black', padding: '20px 0'}}> How are you Feelin Today? </Typography>
-            <Grid container justify="flex-start">
-                <Grid item lg>
-                    <IconButton>
-                        <SentimentVeryDissatisfiedIcon />
-                    </IconButton>
-                </Grid>
-                <Grid item lg>
-                    <IconButton>
-                        <SentimentDissatisfiedIcon />
-                    </IconButton>
-                </Grid>
-                <Grid item lg>
-                    <IconButton>
-                        <SentimentSatisfiedIcon />
-                    </IconButton>
-                </Grid>
-                <Grid item lg>
-                    <IconButton>
-                        <SentimentVerySatisfiedIcon />
-                    </IconButton>
-                </Grid>
-                <Grid item lg>
-                    <IconButton>
-                        <EmojiEmotionsIcon />
-                    </IconButton>
-                </Grid>
-                <Grid item lg></Grid>
-                <Grid item lg></Grid>
-                <Grid item lg></Grid>
-                <Grid item lg></Grid>
-                <Grid item lg></Grid>
+            <Typography className={ mainClasses.sectionHeader}> How are you Feelin Today? </Typography>
+            <Grid container justify="center" alignItems="center"  style={{ margin : "1em 0"}}>
+            <Grid item lg>
+                <IconButton>
+                    <SentimentVeryDissatisfiedIcon />
+                </IconButton>
+            </Grid>
+            <Grid item lg>
+                <IconButton>
+                    <SentimentDissatisfiedIcon />
+                </IconButton>
+            </Grid>
+            <Grid item lg>
+                <IconButton>
+                    <SentimentSatisfiedIcon />
+                </IconButton>
+            </Grid>
+            <Grid item lg>
+                <IconButton>
+                    <SentimentVerySatisfiedIcon />
+                </IconButton>
+            </Grid>
+            <Grid item lg>
+                <IconButton>
+                    <EmojiEmotionsIcon />
+                </IconButton>
+            </Grid>
+            <Grid item lg></Grid>
+            <Grid item lg></Grid>
+            <Grid item lg></Grid>
             </Grid>
             <TextField 
                 fullWidth
@@ -81,6 +80,11 @@ const MoodTracker = () => {
                 label="How do you feel?"
                 variant="outlined"
             />
+            <Typography variant="h6" className={ mainClasses.title}>Last 7 Days</Typography>
+            <div style={{backgroundColor:"white", padding: "30px 40px"}}> 
+                <Line data={data} />
+            </div>
+            
         </div>
     )
 }

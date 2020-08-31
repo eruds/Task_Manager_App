@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import { makeStyles } from '@material-ui/styles'
+import { UseMainClasses } from './Theming'
+
 import { 
     TextField, 
     Typography, 
@@ -14,15 +17,13 @@ import {
     Grid,
     Popover,
 } from '@material-ui/core'
+
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import MenuIcon from '@material-ui/icons/Menu';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import { makeStyles } from '@material-ui/styles'
-
-// Custom Hooks 
 
 // Components 
 import EditTaskModal from './EditTaskModal'
@@ -36,7 +37,7 @@ import { dummyTasks, Task, Priority } from './database'
 
 const useStyles = makeStyles({
     root : {
-        backgroundColor : '#EDECEE',
+        // backgroundColor : '#EDECEE',
     }
 })
 
@@ -44,6 +45,7 @@ const useStyles = makeStyles({
 const TodoList = () => {
     // Component Styling 
     const classes = useStyles()
+    const mainClasses = UseMainClasses()
 
     //**** Hooks ****/ 
     // Current Tasks 
@@ -154,11 +156,11 @@ const TodoList = () => {
 
 
     return (
-        <div className={classes.root} style={{color : 'black'}}>
+        <div className={classes.root} >
             <Grid container alignItems="center" justify="flex-end" spacing={3}>
                 <Grid item lg={8} xs={10}>
                     <Typography 
-                        style={{ fontFamily : 'Nunito', fontSize : '2rem', fontWeight : 600}} 
+                        className={mainClasses.sectionHeader}
                         gutterBottom
                     > Today </Typography>
                 </Grid>
