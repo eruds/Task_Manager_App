@@ -1,5 +1,5 @@
 #Don't upload the old code
-/node_modules
-server/node_modules
-client/level-up/node_modules
 /oldCode
+/node_modules
+resolversTemplate.ts
+config.ts
