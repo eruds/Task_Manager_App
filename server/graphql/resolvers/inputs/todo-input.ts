@@ -4,9 +4,6 @@ import { Todo } from "../../../models/Todo";
 
 @InputType()
 export class AddTodoInput implements Partial<Todo> {
-	@Field((type) => ID)
-	userId!: string;
-
 	@Field()
 	title!: string;
 
@@ -17,9 +14,6 @@ export class AddTodoInput implements Partial<Todo> {
 
 @InputType()
 export class DeleteTodoInput {
-	@Field((type) => ID)
-	userId!: string;
-
 	@Field((type) => ID)
 	todoId!: string;
 }

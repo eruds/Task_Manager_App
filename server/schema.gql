@@ -6,7 +6,6 @@
 input AddTodoInput {
   description: String!
   title: String!
-  userId: ID!
 }
 
 """User Create Input Field"""
@@ -15,11 +14,6 @@ input CreateUserInput {
   email: String!
   password: String!
   username: String!
-}
-
-input DeleteTodoInput {
-  todoId: ID!
-  userId: ID!
 }
 
 """User Login Input Field"""
@@ -42,7 +36,7 @@ type loginResponseType {
 type Mutation {
   addTodo(data: AddTodoInput!): User!
   createNewUser(data: CreateUserInput!): loginResponseType!
-  deleteTodo(data: DeleteTodoInput!): Boolean!
+  deleteTodo(todoId: String!): Boolean!
   login(data: LoginInput!): loginResponseType!
 }
 
