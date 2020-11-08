@@ -3,12 +3,6 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
-"""Skill add input"""
-input AddSkillInput {
-  title: String!
-  userId: String!
-}
-
 input AddTodoInput {
   description: String!
   title: String!
@@ -17,15 +11,39 @@ input AddTodoInput {
 
 """User Create Input Field"""
 input CreateUserInput {
+  confirmPassword: String!
   email: String!
   password: String!
   username: String!
 }
 
+input DeleteTodoInput {
+  todoId: ID!
+  userId: ID!
+}
+
+"""User Login Input Field"""
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type loginResponseType {
+  createdAt: String!
+  email: String!
+  id: ID!
+  password: String!
+  skills: [Skill!]!
+  todos: [Todo]!
+  token: String!
+  username: String!
+}
+
 type Mutation {
-  addSkill(data: AddSkillInput!): Skill!
   addTodo(data: AddTodoInput!): User!
-  createNewUser(data: CreateUserInput!): User!
+  createNewUser(data: CreateUserInput!): loginResponseType!
+  deleteTodo(data: DeleteTodoInput!): Boolean!
+  login(data: LoginInput!): loginResponseType!
 }
 
 type Query {
@@ -35,24 +53,25 @@ type Query {
 """Skill"""
 type Skill {
   _id: ID!
-  title: String!
+  name: String!
+  progress: Int!
 }
 
 """The Todo Model"""
 type Todo {
-  _id: ID!
   createdAt: String!
   deadline: String!
   description: String!
+  id: ID!
   title: String!
   urgent: Float!
 }
 
 """User Model"""
 type User {
-  _id: ID!
   createdAt: String!
   email: String!
+  id: ID!
   password: String!
   skills: [Skill!]!
   todos: [Todo]!

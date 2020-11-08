@@ -1,14 +1,23 @@
-import { ObjectType, ID, Field } from "type-graphql";
-import { getModelForClass, prop as Properties } from "@typegoose/typegoose";
+import { ObjectType, ID, Field, Int } from "type-graphql";
+import { getModelForClass, Prop, Ref } from "@typegoose/typegoose";
 import { ObjectID } from "mongodb";
+import { SkillCategory } from "./SkillCategory";
 
+//TODO Change this schema
 @ObjectType({ description: "Skill" })
 export class Skill {
 	@Field(() => ID)
-	_id!: ObjectID;
-
+	_id?: ObjectID;
 	@Field()
-	title!: string;
+	@Prop()
+	name!: string;
+	//? How would you track progress?
+	@Field(() => Int)
+	@Prop()
+	progress!: number;
+	// 	@Field()
+	// 	@Prop({ ref: () => SkillCategory })
+	// 	skillCategory?: Ref<SkillCategory>;
 }
 
 export const SkillModel = getModelForClass(Skill);

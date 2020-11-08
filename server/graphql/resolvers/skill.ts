@@ -7,21 +7,19 @@ import { UserModel } from "../../models/User";
 import { ObjectID } from "mongodb";
 
 @Resolver()
-export class SkillResolver {
+export default class SkillResolver {
 	//! This shit somehow returns an array
-	@Mutation(() => Skill)
-	async addSkill(@Arg("data") { userId, title }: AddSkillInput) {
-		const user = await UserModel.findById(userId);
-		if (user) {
-			const skill: Skill = {
-				_id: new ObjectID(),
-				title,
-			};
-			user.username = "notHello";
-			user.save();
-			return user;
-		} else {
-			throw new UserInputError("User not found");
-		}
-	}
+	// @Mutation(() => Skill)
+	// async addSkill(@Arg("data") { userId, name }: AddSkillInput) {
+	// 	const user = await UserModel.findById(userId);
+	// 	if (user) {
+	// 		user.skills.push({
+	// 			name,
+	// 		});
+	// 		user.save();
+	// 		return user;
+	// 	} else {
+	// 		throw new UserInputError("User not found");
+	// 	}
+	// }
 }

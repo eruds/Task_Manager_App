@@ -5,7 +5,6 @@ import { Todo } from "../../../models/Todo";
 @InputType()
 export class AddTodoInput implements Partial<Todo> {
 	@Field((type) => ID)
-	//? Maybe Change this to MongoDB Object ID?
 	userId!: string;
 
 	@Field()
@@ -14,4 +13,13 @@ export class AddTodoInput implements Partial<Todo> {
 	@Field()
 	@Length(1, 255)
 	description?: string;
+}
+
+@InputType()
+export class DeleteTodoInput {
+	@Field((type) => ID)
+	userId!: string;
+
+	@Field((type) => ID)
+	todoId!: string;
 }

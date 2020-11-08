@@ -1,6 +1,5 @@
 import { ObjectType, ID, Field } from "type-graphql";
-import { getModelForClass, prop as Properties } from "@typegoose/typegoose";
-import { ObjectID } from "mongodb";
+import { getModelForClass, Prop } from "@typegoose/typegoose";
 
 import { Todo } from "./Todo";
 import { Skill } from "./Skill";
@@ -8,33 +7,33 @@ import { Skill } from "./Skill";
 @ObjectType({ description: "User Model" })
 export class User {
 	@Field((type) => ID)
-	_id!: ObjectID;
+	id!: string;
 
 	@Field()
-	@Properties()
+	@Prop({ required: true })
 	username!: string;
 
 	@Field()
-	@Properties()
+	@Prop({ required: true })
 	email!: string;
 
 	@Field()
-	@Properties()
+	@Prop({ required: true })
 	password!: string;
 
 	@Field()
-	@Properties()
+	@Prop({ required: true })
 	createdAt!: string;
 
 	//*Short term daily tasks
 	@Field(() => [Todo], { nullable: "items" })
-	@Properties()
-	todos!: [Todo];
+	@Prop({ type: () => [Todo] })
+	todos!: Todo[];
 
 	//* Skills you want to improve on
-	@Field((type) => [Skill])
-	@Properties()
-	skills!: [Skill];
+	@Field(() => [Skill])
+	@Prop({ type: () => [Skill] })
+	skills!: Skill[];
 
 	//*Your long term goals, consisting goals to achieve
 	//*by more than two years

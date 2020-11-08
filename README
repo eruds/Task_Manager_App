@@ -1,4 +1,91 @@
+Features : 
+Login and Registery 
+//! Try to implement google account login 
+
+Calendar 
+//! Try to integrate google calendar 
+
+PointSystem 
+
+Todos 
+
+A Simple todo to complete daily tasks. A Todo is a task that need to be completed in range of a week to a month from its creation. 
+
+
+Skills & Skill category 
+
+Main Features : 
+    - Time spending goals on each skills ( ex : 1 Hour per week )
+    - Challenges and Mission ( Can be a reccomendation or custom made )
+
+Skills is a kind of subscription based system where a user would subscribe into a certain skill category, 
+the skill category will provides many different reccomendation to the user to try and improve their Skills.
+
+Skills will provide user with challenges and goals 
+
+The skill field itself will be implemented into the user model, where a user can create and name a skill. 
+- There can't be a duplicate skill 
+
+Ideas for different skills : 
+// There will be different hierarchy of each skills. Programming will have Web Development, Machine Learning, 
+// etc. Art will have digital and traditional art, but they will skill be "Programming" and "Art" category as a general 
+// if the specified hadn't been made. 
+// A skill can have the same name as the category name.
+    - Sport 
+    - Programming
+    - Language 
+    - School 
+    - Digital Art 
+    - Art 
+    - Music 
+    - Guitar
+    - Piano 
+    - Dancing 
+    - Carpentry 
+
+Habits 
+Add a different punishment and reward system
+
+//? What would be considered as a habit
+ideas : 
+- A set of respectable range for the habit to be accepted.
+It will not mark the habit to be completed but the habit will be mark as 
+accepted on that day 
+- The range works both ways, if you do more than the accepted range, you will get more points 
+- Point system : 0.8 for accepted, 1.2 for extra reward
+- Skip -> you can only skip once in 2 weeks 
+- Colors : Red -> Uncompleted
+
+Challenges
+// A Set of challenges created as a reccomendation 
+// for the user. Consist of challenges for 
+    7 Days and 
+    30 Days to 
+    100 Days to 
+    365 Days
+// A User can create their own challenges, and they have an option to share it 
+
+
+Accomplishments : 
+User can share their personal best work that they did 
+
 TODOS : 
 Fix Todo to accept deadline input 
+A guide to help user learn how to use the app 
+create a type definitions for : 
+Challenges 
+Habits 
+
+Important : 
+Remember to change database before deployment
+
+
+
+Ideas : 
+//? TODO Tagging system?
+//? Make a system so user won't overuse their time. 
+//? Maybe a dedicated Workout Section?
+//? Missions // Personal challenges that the person set 
+
 
 An application to level up their users, accomplishing their dreams and goals, and hopefully help them to find meaning in life

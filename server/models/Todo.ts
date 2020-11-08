@@ -1,26 +1,30 @@
 import { ObjectType, Field, ID } from "type-graphql";
-import { prop as Property, getModelForClass } from "@typegoose/typegoose";
+import { getModelForClass, Prop } from "@typegoose/typegoose";
 import { ObjectId } from "mongodb";
 
 @ObjectType({ description: "The Todo Model" })
 export class Todo {
+	//It is not required in adding the data, but it is required to fetch it
 	@Field(() => ID)
-	_id!: ObjectId;
+	id?: string;
 
 	@Field()
+	@Prop()
 	createdAt!: string;
 
 	@Field()
+	@Prop()
 	deadline!: string;
 
 	@Field()
+	@Prop()
 	title!: string;
 
 	@Field()
+	@Prop()
 	description?: string;
 
 	@Field()
+	@Prop()
 	urgent!: 0 | 1 | 2 | 3;
 }
-
-export const TodoModel = getModelForClass(Todo);
