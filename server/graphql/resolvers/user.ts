@@ -35,6 +35,11 @@ export default class userResolver {
 		return await UserModel.find();
 	}
 
+	@Query(() => User)
+	async returnUserData(@Arg("userId") userId: string) {
+		return await UserModel.findById(userId);
+	}
+
 	@Mutation(() => loginResponseType)
 	async createNewUser(
 		@Arg("data")
@@ -79,6 +84,8 @@ export default class userResolver {
 			});
 		}
 	}
+
+	//! email need to be perfectly match ( if there is an uppercase difference it creates a problem )
 	@Mutation(() => loginResponseType)
 	async login(@Arg("data") { email, password }: LoginInput): Promise<any> {
 		const { valid, errors } = validateLoginInput(email, password);
