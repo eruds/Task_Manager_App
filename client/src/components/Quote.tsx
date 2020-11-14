@@ -21,14 +21,14 @@ export default function Quote() {
 	}, [quote]);
 
 	return (
-		<Paper className="app-bar-message">
+		<Paper style={{ textAlign: "center", padding: "0.8em 0.2em" }}>
 			<Container>
 				{isLoading ? (
-					<Fade in={true}>
+					<Fade in={true} timeout={350}>
 						<Typography variant="body1"> Loading ... </Typography>
 					</Fade>
 				) : (
-					<Fade in={true}>
+					<Fade in={true} timeout={350}>
 						<Typography variant="body1"> {quote}</Typography>
 					</Fade>
 				)}

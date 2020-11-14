@@ -52,15 +52,16 @@ export default class userResolver {
 			confirmPassword
 		);
 		if (!valid) {
-			throw new UserInputError("Error", errors);
+			throw new UserInputError("Error", { errors });
 		}
 
 		const findUser: User | null = await UserModel.findOne({ username });
 		if (!findUser) {
+			const lowerCaseEmail = email.toLowerCase();
 			password = await bcrypt.hash(password, 12);
 			const newUser = await UserModel.create({
 				username,
-				email,
+				email: lowerCaseEmail,
 				password,
 				createdAt: new Date().toISOString(),
 				todos: [],
@@ -85,24 +86,23 @@ export default class userResolver {
 		}
 	}
 
-	//! email need to be perfectly match ( if there is an uppercase difference it creates a problem )
 	@Mutation(() => loginResponseType)
 	async login(@Arg("data") { email, password }: LoginInput): Promise<any> {
 		const { valid, errors } = validateLoginInput(email, password);
 		if (!valid) {
-			throw new UserInputError("Errors", errors);
+			throw new UserInputError("Errors", { errors });
 		}
-		//!Fix this
-		const user: any = await UserModel.findOne({ email });
+		const lowerCaseEmail = email.toLowerCase();
+		const user: any = await UserModel.findOne({ email: lowerCaseEmail });
 		if (!user) {
 			errors.general = "User not found";
-			throw new UserInputError("User not Found", errors);
+			throw new UserInputError("User not Found", { errors });
 		}
 
 		const match = bcrypt.compare(password, user.password);
 		if (!match) {
 			errors.general = "Wrong Credentials";
-			throw new UserInputError("Wrong Credentials", errors);
+			throw new UserInputError("Wrong Credentials", { errors });
 		}
 
 		const token = generateToken(user);

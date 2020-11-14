@@ -4,30 +4,3 @@ body {
 	padding: 0;
 	font-family: "Roboto";
 }
-
-.main {
-	padding: 3rem 0;
-}
-
-.section {
-	padding: 7rem;
-}
-
-.content {
-	margin: 1rem 0;
-	padding: 1rem 3rem;
-}
-
-.sub-content {
-	margin: 1rem 0 !important;
-}
-
-.app-bar-message {
-	text-align: center;
-	padding: 0.8em 0.2em;
-}
-
-.app-bar-button {
-	/* color: white !important; */
-	margin: 0 10px !important;
-}

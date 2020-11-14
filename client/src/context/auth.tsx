@@ -1,9 +1,13 @@
 import React, { createContext, useReducer } from "react";
 import jwtDecode from "jwt-decode";
-import { User, Todo } from "../utils/typeDefs";
+import { User } from "../utils/typeDefs";
 
-const initialState = {
-	user: { id: "", todos: new Array<Todo>() },
+interface InitialState {
+	user: User | null;
+}
+
+const initialState: InitialState = {
+	user: null,
 };
 
 const token: string | null = localStorage.getItem("jwtToken");

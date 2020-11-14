@@ -1,6 +1,5 @@
 import { ObjectType, Field, ID } from "type-graphql";
 import { getModelForClass, Prop } from "@typegoose/typegoose";
-import { ObjectId } from "mongodb";
 
 @ObjectType({ description: "The Todo Model" })
 export class Todo {

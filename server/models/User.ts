@@ -31,7 +31,7 @@ export class User {
 	todos!: Todo[];
 
 	//* Skills you want to improve on
-	@Field(() => [Skill])
+	@Field(() => [Skill], { nullable: "items" })
 	@Prop({ type: () => [Skill] })
 	skills!: Skill[];
 

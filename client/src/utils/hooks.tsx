@@ -5,6 +5,7 @@ export const useForm = (callback: () => any, initialValues: any = {}) => {
 
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		setValues(initialValues);
 		callback();
 	};
 

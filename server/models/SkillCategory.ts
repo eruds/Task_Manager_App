@@ -2,7 +2,6 @@ import { ObjectType, ID, Field } from "type-graphql";
 import { getModelForClass, Prop } from "@typegoose/typegoose";
 import { ObjectID } from "mongodb";
 
-//TODO Change this schema
 @ObjectType({ description: "Skill Category" })
 export class SkillCategory {
 	// @Field(() => ID)

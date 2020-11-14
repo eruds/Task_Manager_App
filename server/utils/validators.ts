@@ -16,9 +16,15 @@ export const validateRegisterInput = (
 			errors.email = "Email must be a valid email address";
 		}
 	}
-	if (password === "") {
-		errors.password = "Password must not empty";
-	} else if (password !== confirmPassword) {
+	if (password === "" || confirmPassword === "") {
+		if (password === "") {
+			errors.password = "Password must not empty";
+		}
+		if (confirmPassword === "") {
+			errors.confirmPassword = "Confirm Password mush not be empty";
+		}
+	}
+	if (password !== confirmPassword) {
 		errors.confirmPassword = "Passwords must match";
 	}
 
@@ -31,7 +37,7 @@ export const validateRegisterInput = (
 export const validateLoginInput = (email: string, password: string) => {
 	const errors = <any>{};
 	if (email.trim() === "") {
-		errors.username = "Username must not be empty";
+		errors.email = "Email must not be empty";
 	} else {
 		const regEx = /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/;
 		if (!email.match(regEx)) {

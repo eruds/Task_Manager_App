@@ -1,33 +1,57 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { gql, useMutation } from "@apollo/client";
-import {
-	Button,
-	Container,
-	InputAdornment,
-	TextField,
-	Typography,
-	Paper,
-} from "@material-ui/core";
-import AccountCircle from "@material-ui/icons/AccountCircle";
+import { Container, Paper } from "@material-ui/core";
 import LockIcon from "@material-ui/icons/Lock";
+import MailIcon from "@material-ui/icons/Mail";
 
 import { AuthContext } from "../context/auth";
 import { useForm } from "../utils/hooks";
+import UserForm from "./form/UserForm";
+
+import { generalClasses } from "./styles/general";
+import { formClasses } from "./styles/formClasses";
 
 export default function Login(props: any) {
+	const isHomepage = window.location.pathname;
+	// Import Styles
+	const classes: any =
+		isHomepage === "/"
+			? { ...generalClasses(), ...formClasses() }
+			: generalClasses();
+
+	//Import context
 	const context = useContext(AuthContext);
+
+	//For error messages
+	const [errors, setErrors] = useState<any>({});
+
+	//Form Handler
 	const { values, onChange, onSubmit } = useForm(callLoginUser, {
 		email: "",
 		password: "",
 	});
-	//! BACKEND email need to be perfectly match ( if there is an uppercase difference it creates a problem )
-	const [loginUser, { loading }] = useMutation(LOGIN_USER, {
+
+	// For Constructing Form
+	const icons = {
+		email: <MailIcon style={{ color: errors.email ? "#F44336" : "#3F51B5" }} />,
+		password: (
+			<LockIcon style={{ color: errors.password ? "#F44336" : "#3F51B5" }} />
+		),
+	};
+
+	// Login Mutation
+	const [loginUser] = useMutation(LOGIN_USER, {
 		update(_, { data }) {
 			context.login(data.login);
 			props.history.push("/");
 		},
 		onError(err) {
-			console.log(err);
+			const errors = err.graphQLErrors[0]?.extensions?.exception.errors;
+			if (errors) {
+				setErrors(errors);
+			} else {
+				setErrors({});
+			}
 		},
 		variables: values,
 	});
@@ -39,57 +63,17 @@ export default function Login(props: any) {
 	return (
 		<Container>
 			<Paper
-				style={{
-					margin: "2rem 20%",
-				}}
-				className="section"
-				elevation={3}
+				className={classes.main + " " + classes.background}
+				elevation={isHomepage ? 0 : 3}
 			>
-				<Typography variant="h3" color="inherit" align="center">
-					Login
-				</Typography>
-				<form
-					action="submit"
+				<UserForm
+					name="Login"
 					onSubmit={onSubmit}
-					autoComplete="off"
-					style={{ display: "flex", flexDirection: "column" }}
-				>
-					<TextField
-						id="email"
-						label="Email"
-						type="text"
-						value={values.email}
-						onChange={onChange}
-						variant="outlined"
-						margin="normal"
-						InputProps={{
-							startAdornment: (
-								<InputAdornment position="start">
-									<AccountCircle color="primary" />
-								</InputAdornment>
-							),
-						}}
-					/>
-					<TextField
-						id="password"
-						label="Password"
-						type="password"
-						value={values.password}
-						onChange={onChange}
-						variant="outlined"
-						margin="normal"
-						InputProps={{
-							startAdornment: (
-								<InputAdornment position="start">
-									<LockIcon color="primary" />
-								</InputAdornment>
-							),
-						}}
-					/>
-					<Button type="submit" className="sub-content">
-						Login
-					</Button>
-				</form>
+					onChange={onChange}
+					values={values}
+					errors={errors}
+					icons={icons}
+				/>
 			</Paper>
 		</Container>
 	);

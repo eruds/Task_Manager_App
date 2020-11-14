@@ -3,17 +3,21 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
-input AddTodoInput {
-  description: String!
-  title: String!
-}
-
 """User Create Input Field"""
 input CreateUserInput {
   confirmPassword: String!
   email: String!
   password: String!
   username: String!
+}
+
+input EditTodoInput {
+  createdAt: String!
+  deadline: String!
+  description: String!
+  id: ID!
+  title: String!
+  urgent: Float!
 }
 
 """User Login Input Field"""
@@ -27,16 +31,17 @@ type loginResponseType {
   email: String!
   id: ID!
   password: String!
-  skills: [Skill!]!
+  skills: [Skill]!
   todos: [Todo]!
   token: String!
   username: String!
 }
 
 type Mutation {
-  addTodo(data: AddTodoInput!): User!
+  addTodo(title: String!): User!
   createNewUser(data: CreateUserInput!): loginResponseType!
-  deleteTodo(todoId: String!): Boolean!
+  deleteTodo(todoId: String!): User!
+  editTodo(data: EditTodoInput!): User!
   login(data: LoginInput!): loginResponseType!
 }
 
@@ -68,7 +73,7 @@ type User {
   email: String!
   id: ID!
   password: String!
-  skills: [Skill!]!
+  skills: [Skill]!
   todos: [Todo]!
   username: String!
 }
