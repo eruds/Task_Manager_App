@@ -18,7 +18,7 @@ export default function TodoList() {
 	const { user } = useContext(AuthContext);
 
 	// Form Handler
-	const { values, onChange, onSubmit } = useForm(callAddTodo, {
+	const { values, onFormChange, onSubmit } = useForm(callAddTodo, {
 		title: "",
 	});
 
@@ -69,7 +69,7 @@ export default function TodoList() {
 					id="title"
 					label="Task"
 					value={values.title}
-					onChange={onChange}
+					onChange={onFormChange}
 					fullWidth
 					placeholder="Add new Task..."
 					variant="outlined"

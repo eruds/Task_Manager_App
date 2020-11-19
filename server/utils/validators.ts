@@ -53,3 +53,20 @@ export const validateLoginInput = (email: string, password: string) => {
 		valid: Object.keys(errors).length < 1,
 	};
 };
+
+// function checkProgress(progress: string) {
+// 	let response: number = 0;
+// 	if (progress === "Beginner") {
+// 		return response;
+// 	} else if (progress === "Amateur") {
+// 		response = 400;
+// 	} else if (progress === "Intermediate") {
+// 		response === 3000;
+// 	} else if (progress === "Expert") {
+// 		response === 8000;
+// 	} else if (progress === "Master") {
+// 		response === 10000;
+// 	}
+
+// 	return response;
+// }

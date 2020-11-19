@@ -14,6 +14,56 @@ interface Todo {
 	urgent: number;
 }
 
+interface SkillCategory {
+	id?: string;
+	title: string;
+	challenges: Challenge[];
+}
+
+interface Log {
+	createdAt: string;
+	description: string;
+}
+
+interface Mission {
+	id?: string;
+	title: string;
+	description: string;
+	startedAt: string;
+	finishedAt: string;
+	isStarted: boolean;
+	isFinished: boolean;
+	timeSpent: boolean;
+	lastStartedAt: string;
+	log?: Log;
+	createdAt: string;
+}
+
+interface Day {
+	title: string;
+	completed: boolean;
+	log: Log;
+}
+
+interface Challenge {
+	id?: string;
+	title: string;
+	startedAt: string;
+	duration: number;
+	description: string;
+	day: Day;
+}
+
+interface Skill {
+	id: string;
+	title: string;
+	createdAt: string;
+	progress: number;
+	categories: string[];
+	missions: Mission[];
+	challenges: Challenge[];
+}
+
 interface User {
 	id?: string;
 	username: string;
@@ -26,9 +76,7 @@ interface User {
 	todos: Todo[];
 
 	// //* Skills you want to improve on
-	// skills!: Skill[];
+	skills: Skill[];
 }
 
-// interface Skill {}
-
-export type { User, Todo };
+export type { User, Todo, Skill, Mission, Challenge, SkillCategory };

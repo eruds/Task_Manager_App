@@ -10,7 +10,6 @@ import {
 	FormControl,
 	FormControlLabel,
 	IconButton,
-	Menu,
 	Radio,
 	RadioGroup,
 	TextField,

@@ -18,6 +18,15 @@ export const generalClasses = makeStyles({
 	subContent: {
 		margin: "1rem 0",
 	},
+
+	horizontalContainer: {
+		display: "flex",
+	},
+
+	columnContainer: {
+		display: "flex",
+		flexDirection: "column",
+	},
 });
 
 export const formErrorMessage = makeStyles({

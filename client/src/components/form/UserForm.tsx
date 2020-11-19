@@ -8,7 +8,7 @@ import { generalClasses } from "../styles/general";
 import { formClasses } from "../styles/formClasses";
 
 interface userFormProps {
-	name: string;
+	name?: string;
 	onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	errors: any;
@@ -27,14 +27,16 @@ export default function UserForm({
 	const classes = { ...generalClasses(), ...formClasses() };
 	return (
 		<>
-			<Typography
-				variant="h3"
-				color="inherit"
-				align="center"
-				style={{ marginBottom: "2rem" }}
-			>
-				{name}
-			</Typography>
+			{name && (
+				<Typography
+					variant="h3"
+					color="inherit"
+					align="center"
+					style={{ marginBottom: "2rem" }}
+				>
+					{name}
+				</Typography>
+			)}
 			<form
 				action="submit"
 				onSubmit={onSubmit}

@@ -33,7 +33,8 @@ export class User {
 	//* Skills you want to improve on
 	@Field(() => [Skill], { nullable: "items" })
 	@Prop({ type: () => [Skill] })
-	skills!: Skill[];
+	//Temporary Solution
+	skills!: Array<Skill>;
 
 	//*Your long term goals, consisting goals to achieve
 	//*by more than two years

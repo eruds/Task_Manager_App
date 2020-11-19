@@ -26,7 +26,7 @@ export default function Login(props: any) {
 	const [errors, setErrors] = useState<any>({});
 
 	//Form Handler
-	const { values, onChange, onSubmit } = useForm(callLoginUser, {
+	const { values, onFormChange, onSubmit } = useForm(callLoginUser, {
 		email: "",
 		password: "",
 	});
@@ -69,7 +69,7 @@ export default function Login(props: any) {
 				<UserForm
 					name="Login"
 					onSubmit={onSubmit}
-					onChange={onChange}
+					onChange={onFormChange}
 					values={values}
 					errors={errors}
 					icons={icons}

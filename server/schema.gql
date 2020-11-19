@@ -3,12 +3,66 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+"""Add Challenge Input Type"""
+input AddChallengeInput {
+  description: String!
+  duration: Int!
+  skillId: ID!
+  title: String!
+}
+
+"""Add Mission Log input type """
+input AddLogMissionInput {
+  description: String!
+  missionId: ID!
+  skillId: ID!
+}
+
+"""Add Mission input type"""
+input AddMissionInput {
+  description: String!
+  missionId: ID!
+  skillId: ID!
+  title: String!
+}
+
+"""Skill add input"""
+input AddSkillInput {
+  categories: [String]!
+  progress: Float!
+  title: String!
+}
+
+"""The Challenge Model"""
+type Challenge {
+  description: String!
+  duration: Int!
+  id: ID!
+  startedAt: String!
+  title: String!
+}
+
 """User Create Input Field"""
 input CreateUserInput {
   confirmPassword: String!
   email: String!
   password: String!
   username: String!
+}
+
+"""Edit Mission input type """
+input EditMissionInput {
+  description: String!
+  missionId: ID!
+  skillId: ID!
+}
+
+"""Skill edit input """
+input EditSkillInput {
+  categories: [String]!
+  progress: Float!
+  skillId: String!
+  title: String!
 }
 
 input EditTodoInput {
@@ -18,6 +72,12 @@ input EditTodoInput {
   id: ID!
   title: String!
   urgent: Float!
+}
+
+"""Log Model"""
+type Log {
+  createdAt: String!
+  description: String!
 }
 
 """User Login Input Field"""
@@ -37,12 +97,46 @@ type loginResponseType {
   username: String!
 }
 
+"""The Mission Model"""
+type Mission {
+  createdAt: String!
+  description: String!
+  finishedAt: String!
+  id: ID!
+  isFinished: Boolean!
+  isPaused: Boolean!
+  isStarted: Boolean!
+  lastStartedAt: String!
+  log: [Log]!
+  pausedAt: String!
+  startedAt: String!
+  timeSpent: Float!
+  title: String!
+}
+
+"""General Mission Input Type """
+input MissionInput {
+  missionId: ID!
+  skillId: ID!
+}
+
 type Mutation {
+  addChallenge(data: AddChallengeInput!): User!
+  addLog(Data: AddLogMissionInput!): User!
+  addMission(data: AddMissionInput!): User!
+  addSkill(data: AddSkillInput!): User!
   addTodo(title: String!): User!
   createNewUser(data: CreateUserInput!): loginResponseType!
+  deleteMission(Data: MissionInput!): User!
+  deleteSkill(skillId: String!): User!
   deleteTodo(todoId: String!): User!
+  editMission(Data: EditMissionInput!): User!
+  editSkill(data: EditSkillInput!): User!
   editTodo(data: EditTodoInput!): User!
+  finishMission(Data: MissionInput!): User!
   login(data: LoginInput!): loginResponseType!
+  pauseMission(Data: MissionInput!): User!
+  startMission(Data: MissionInput!): User!
 }
 
 type Query {
@@ -52,9 +146,13 @@ type Query {
 
 """Skill"""
 type Skill {
-  _id: ID!
-  name: String!
+  categories: [String]!
+  challenges: [Challenge]!
+  createdAt: String!
+  id: ID!
+  missions: [Mission]!
   progress: Int!
+  title: String!
 }
 
 """The Todo Model"""

@@ -22,7 +22,9 @@ import Home from "./components/Home";
 import LandingPage from "./components/LandingPage";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Skills from "./components/SkillsPage";
+import TodoList from "./components/TodoList/TodoList";
+import Skills from "./components/SkillPage/SkillsPage";
+import WorkoutPage from "./components/WorkoutPage/WorkoutPage";
 
 import "./App.css";
 
@@ -86,11 +88,18 @@ export default function App() {
 								/>
 								<AuthRoute
 									exact
+									path="/workout"
+									redirect="/home"
+									nonUser={true}
+									component={WorkoutPage}
+								/>
+								{/* <AuthRoute
+									exact
 									path="/todos"
 									redirect="/home"
 									nonUser={true}
-									component={Skills}
-								/>
+									component={TodoList}
+								/> */}
 								<AuthRoute
 									exact
 									path="/skills"

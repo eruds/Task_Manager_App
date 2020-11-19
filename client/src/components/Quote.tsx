@@ -29,7 +29,9 @@ export default function Quote() {
 					</Fade>
 				) : (
 					<Fade in={true} timeout={350}>
-						<Typography variant="body1"> {quote}</Typography>
+						<Typography variant="body1" style={{ textAlign: "justify" }}>
+							{quote}
+						</Typography>
 					</Fade>
 				)}
 			</Container>

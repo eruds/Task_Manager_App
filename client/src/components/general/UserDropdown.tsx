@@ -85,6 +85,7 @@ export default function UserDropdown({ classes }: { classes: any }) {
 								Skills
 							</Button>
 							<Divider />
+
 							<Button
 								onClick={logoutUser}
 								className={classes.menuButton}

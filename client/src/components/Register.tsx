@@ -26,7 +26,7 @@ export default function Register(props: any) {
 	const [errors, setErrors] = useState<any>({});
 
 	//Form Handler
-	const { values, onChange, onSubmit } = useForm(callregisterUser, {
+	const { values, onFormChange, onSubmit } = useForm(callregisterUser, {
 		username: "",
 		email: "",
 		password: "",
@@ -84,7 +84,7 @@ export default function Register(props: any) {
 				<UserForm
 					name="Register"
 					onSubmit={onSubmit}
-					onChange={onChange}
+					onChange={onFormChange}
 					values={values}
 					errors={errors}
 					icons={icons}

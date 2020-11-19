@@ -5,11 +5,12 @@ export const useForm = (callback: () => any, initialValues: any = {}) => {
 
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		console.log("Test");
 		setValues(initialValues);
 		callback();
 	};
 
-	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const onFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setValues({
 			...values,
 			[e.target.id]: e.target.value,
@@ -19,6 +20,24 @@ export const useForm = (callback: () => any, initialValues: any = {}) => {
 	return {
 		values,
 		onSubmit,
-		onChange,
+		onFormChange,
+	};
+};
+
+export const useModal = () => {
+	const [open, setOpen] = useState(false);
+
+	const openModal = () => {
+		setOpen(true);
+	};
+
+	const closeModal = () => {
+		setOpen(false);
+	};
+
+	return {
+		open,
+		openModal,
+		closeModal,
 	};
 };

@@ -1,18 +1,17 @@
 import { ObjectType, ID, Field } from "type-graphql";
 import { getModelForClass, Prop } from "@typegoose/typegoose";
-import { ObjectID } from "mongodb";
+import { Challenge } from "./Challenge";
 
 @ObjectType({ description: "Skill Category" })
 export class SkillCategory {
-	// @Field(() => ID)
-	// _id?: ObjectID;
-	// @Field()
-	// @Prop()
-	// name!: string;
-	// //TODO
-	// @Field()
-	// @Prop()
-	// recomendations!: Challenge;
-}
+	@Field()
+	id?: string;
 
-export const SkillModel = getModelForClass(SkillCategory);
+	@Field()
+	@Prop()
+	title!: string;
+
+	@Field(() => [Challenge], { nullable: "items" })
+	@Prop({ type: () => [Challenge] })
+	challenges?: Challenge[];
+}

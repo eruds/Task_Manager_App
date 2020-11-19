@@ -1,10 +1,9 @@
-import { AuthenticationError } from "apollo-server";
+import { AuthenticationError, UserInputError } from "apollo-server";
 import { Resolver, Mutation, Arg, Query, Args, Ctx } from "type-graphql";
 import { Todo } from "../../models/Todo";
 import { User, UserModel } from "../../models/User";
 import { checkAuth } from "../../utils/checkAuth";
 import { EditTodoInput } from "./inputs/todo-input";
-import { ObjectID } from "mongodb";
 
 @Resolver()
 export default class TodoResolver {
@@ -15,6 +14,10 @@ export default class TodoResolver {
 	) {
 		// I don't know if i need to be authorized to make my own todo but eh
 		// Auth error is checked on index.ts
+		if (title.trim() === "") {
+			throw new UserInputError("Title can't be Empty");
+		}
+
 		const authorizedUser: any = checkAuth(ctx);
 		if (authorizedUser) {
 			const user = await UserModel.findById(authorizedUser.id);
@@ -43,8 +46,11 @@ export default class TodoResolver {
 		if (authorizedUser) {
 			const user = await UserModel.findById(authorizedUser.id);
 			if (user) {
-				const todoIndex = user.todos.findIndex((todo) => todo.id === todoId);
-				user.todos.splice(todoIndex, 1);
+				const todoIdx = user.todos.findIndex((todo) => todo.id === todoId);
+				if (todoIdx === -1) {
+					throw new UserInputError("Todo not found");
+				}
+				user.todos.splice(todoIdx, 1);
 				await user.save();
 				return user;
 			} else {
@@ -59,12 +65,18 @@ export default class TodoResolver {
 		{ id, title, urgent, createdAt, deadline, description }: EditTodoInput,
 		@Ctx() ctx: { authHeader: string }
 	) {
+		if (title.trim() === "") {
+			throw new UserInputError("Title can't be Empty");
+		}
+
 		const authorizedUser: any = checkAuth(ctx);
-		console.log(authorizedUser);
 		if (authorizedUser) {
 			const user = await UserModel.findById(authorizedUser.id);
 			if (user) {
 				const todoIdx = user.todos.findIndex((todo) => todo.id === id);
+				if (todoIdx === -1) {
+					throw new UserInputError("Todo not found");
+				}
 				const todo: Todo = {
 					id,
 					title,

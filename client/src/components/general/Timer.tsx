@@ -8,7 +8,7 @@ import { useForm } from "../../utils/hooks";
 export default function Timer() {
 	const [time, setTime] = useState<number>(20 * 60);
 	const [start, setTimer] = useState<boolean>(false);
-	const { values, onChange } = useForm(() => {}, {
+	const { values, onFormChange } = useForm(() => {}, {
 		time: "",
 	});
 
@@ -64,7 +64,7 @@ export default function Timer() {
 							label=""
 							type="int"
 							value={values.time}
-							onChange={onChange}
+							onChange={onFormChange}
 							size="small"
 						/>
 					</form>
