@@ -14,15 +14,14 @@ input AddChallengeInput {
 """Add Mission Log input type """
 input AddLogMissionInput {
   description: String!
-  missionId: ID!
-  skillId: ID!
+  missionId: String!
+  skillId: String!
 }
 
 """Add Mission input type"""
 input AddMissionInput {
   description: String!
-  missionId: ID!
-  skillId: ID!
+  skillId: String!
   title: String!
 }
 
@@ -53,8 +52,9 @@ input CreateUserInput {
 """Edit Mission input type """
 input EditMissionInput {
   description: String!
-  missionId: ID!
-  skillId: ID!
+  missionId: String!
+  skillId: String!
+  title: String!
 }
 
 """Skill edit input """
@@ -101,23 +101,23 @@ type loginResponseType {
 type Mission {
   createdAt: String!
   description: String!
-  finishedAt: String!
-  id: ID!
+  finishedAt: String
+  id: ID
   isFinished: Boolean!
   isPaused: Boolean!
   isStarted: Boolean!
   lastStartedAt: String!
   log: [Log]!
-  pausedAt: String!
-  startedAt: String!
+  pausedAt: String
+  startedAt: String
   timeSpent: Float!
   title: String!
 }
 
 """General Mission Input Type """
 input MissionInput {
-  missionId: ID!
-  skillId: ID!
+  missionId: String!
+  skillId: String!
 }
 
 type Mutation {

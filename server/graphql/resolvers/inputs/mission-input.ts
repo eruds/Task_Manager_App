@@ -3,15 +3,18 @@ import { Mission } from "../../../models/Mission";
 
 @InputType({ description: "General Mission Input Type " })
 export class MissionInput extends Mission {
-	@Field(() => ID)
+	@Field()
 	missionId!: string;
 
-	@Field(() => ID)
+	@Field()
 	skillId!: string;
 }
 
 @InputType({ description: "Add Mission input type" })
-export class AddMissionInput extends MissionInput {
+export class AddMissionInput implements Partial<MissionInput> {
+	@Field()
+	skillId!: string;
+
 	@Field()
 	title!: string;
 
@@ -20,13 +23,28 @@ export class AddMissionInput extends MissionInput {
 }
 
 @InputType({ description: "Edit Mission input type " })
-export class EditMissionInput extends MissionInput {
+export class EditMissionInput implements Partial<MissionInput> {
+	@Field()
+	skillId!: string;
+
+	@Field()
+	missionId!: string;
+
+	@Field()
+	title!: string;
+
 	@Field()
 	description!: string;
 }
 
 @InputType({ description: "Add Mission Log input type " })
-export class AddLogMissionInput extends MissionInput {
+export class AddLogMissionInput implements Partial<MissionInput> {
+	@Field()
+	missionId!: string;
+
+	@Field()
+	skillId!: string;
+
 	@Field()
 	description!: string;
 }

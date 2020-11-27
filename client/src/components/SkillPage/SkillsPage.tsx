@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useQuery, gql } from "@apollo/client";
 import {
 	Button,
@@ -12,12 +12,13 @@ import {
 
 import { skillsPageClasses } from "../styles/skillsPageClasses";
 import { generalClasses } from "../styles/general";
-import AddSkillForm from "./AddSkillForm";
+import AddOrEditSkillForm from "./AddOrEditSkillForm";
 import SkillPanel from "./SkillPanel";
 
 import { useModal } from "../../utils/hooks";
 import { AuthContext } from "../../context/auth";
 import { Skill } from "../../utils/typeDefs";
+import { FETCH_SKILLS } from "../../utils/graphql";
 
 export default function Skills() {
 	// General Imports
@@ -31,8 +32,16 @@ export default function Skills() {
 	const [active, setActive] = useState<number>(0);
 	const { open, openModal, closeModal } = useModal();
 
+	// Tab Handler
+	const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+		if (data) {
+			setCurrentSkill(data.returnUserData.skills[newValue]);
+		}
+		setActive(newValue);
+	};
+
 	// Fetching data
-	const { data } = useQuery(FETCH_SKILLS, {
+	const { data, loading } = useQuery(FETCH_SKILLS, {
 		onError(err) {
 			console.log(err);
 		},
@@ -41,22 +50,10 @@ export default function Skills() {
 		},
 	});
 
-	const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-		if (data) {
-			setCurrentSkill(data.returnUserData.skills[newValue]);
-		}
-		setActive(newValue);
-	};
-
-	// If data is fetched
-
-	let skills: Skill[] = [];
-	if (data) {
-		skills = data.returnUserData.skills;
-		if (!currentSkill) {
-			setCurrentSkill(skills[active]);
-		}
-	}
+	const skills: Skill[] = loading ? [] : data.returnUserData.skills;
+	useEffect(() => {
+		setCurrentSkill(skills[active]);
+	}, [skills]);
 
 	return (
 		<Container>
@@ -77,17 +74,18 @@ export default function Skills() {
 							onChange={handleChange}
 							className={classes.tabs}
 						>
-							{skills.length > 0 ? (
+							{loading ? (
+								<Button disabled className={classes.tab}>
+									No Skils Added Yet
+								</Button>
+							) : !loading ? (
 								skills.map((skill: any, index: number) => {
 									return (
 										<Tab
 											key={skill.id}
 											label={skill.title}
 											value={index}
-											style={{
-												borderBottom: "1px solid rgba(0, 0, 0, 0.10)",
-												padding: "20px 0",
-											}}
+											className={classes.tab}
 										/>
 									);
 								})
@@ -112,41 +110,30 @@ export default function Skills() {
 								Add New Skill
 							</Button>
 						</Tabs>
-						<AddSkillForm
-							open={open}
-							closeModal={closeModal}
-							classes={classes}
-						/>
+						<AddOrEditSkillForm open={open} closeModal={closeModal} />
 					</Grid>
-					<Grid item xs={9}>
-						{data && <SkillPanel classes={classes} skill={currentSkill} />}
+					<Grid
+						container
+						item
+						xs={9}
+						direction="column"
+						style={{
+							justifyContent: loading ? "center" : "flex-start",
+						}}
+					>
+						{loading ? (
+							<div className={classes.noSkillFetched}>
+								<Typography variant="h4">There's Nothing Here!</Typography>
+								<Typography variant="h6">
+									Start Using The Skills Feature By Adding A New Skill!
+								</Typography>
+							</div>
+						) : (
+							data && <SkillPanel classes={classes} skill={currentSkill} />
+						)}
 					</Grid>
 				</Grid>
 			</Paper>
 		</Container>
 	);
 }
-
-const FETCH_SKILLS = gql`
-	query returnUserData($userId: String!) {
-		returnUserData(userId: $userId) {
-			id
-			skills {
-				id
-				title
-				categories
-				progress
-				createdAt
-				missions {
-					id
-					title
-					description
-				}
-				challenges {
-					id
-					title
-				}
-			}
-		}
-	}
-`;

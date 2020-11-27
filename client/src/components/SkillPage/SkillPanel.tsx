@@ -1,16 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { gql, useMutation } from "@apollo/client";
 import {
+	ButtonGroup,
 	Container,
 	Divider,
 	Grid,
 	Paper,
+	IconButton,
+	LinearProgress,
 	Tabs,
 	Tab,
 	Typography,
 } from "@material-ui/core";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import EditIcon from "@material-ui/icons/Edit";
 
-import MissionsList from "./MissionsList";
-import { generalClasses } from "../styles/general";
+import MissionsTab from "./MissionsTab";
+import AddOrEditSkillForm from "./AddOrEditSkillForm";
+import DeleteConfirm from "./../general/DeleteConfirm";
 import { Skill } from "../../utils/typeDefs";
 
 interface SkillData {
@@ -20,7 +27,19 @@ interface SkillData {
 
 export default function SkillPanel({ skill, classes }: SkillData) {
 	const [active, setActive] = useState<"Missions" | "Challenges">("Missions");
-
+	const [confirmDeleteDialog, setConfirmDeleteDialog] = useState<boolean>(
+		false
+	);
+	const [editState, setEditState] = useState<boolean>(false);
+	// Mutations
+	const [deleteSkill] = useMutation(DELETE_SKILL, {
+		onError(err) {
+			console.log(err);
+		},
+		variables: {
+			skillId: skill?.id,
+		},
+	});
 	function tabChange(
 		e: React.ChangeEvent<{}>,
 		newValue: "Missions" | "Challenges"
@@ -28,14 +47,53 @@ export default function SkillPanel({ skill, classes }: SkillData) {
 		setActive(newValue);
 	}
 
+	const progress = ((skill?.progress || 0) / 10000) * 100;
 	return (
 		<Container>
 			<Grid container spacing={2}>
-				<Grid item xs={12}>
-					<Typography variant="h4" align="center">
+				<Grid container item xs={12} style={{ justifyContent: "space-around" }}>
+					<Typography variant="h4" align="left" style={{ flexBasis: "80%" }}>
 						{skill?.title}
 					</Typography>
-					<Divider style={{ margin: "20px 0 " }} />
+					<ButtonGroup>
+						<IconButton onClick={() => setConfirmDeleteDialog(true)}>
+							<DeleteForeverIcon />
+						</IconButton>
+						<IconButton onClick={() => setEditState(true)}>
+							<EditIcon />
+						</IconButton>
+					</ButtonGroup>
+					<DeleteConfirm
+						open={confirmDeleteDialog}
+						setOpen={setConfirmDeleteDialog}
+						item={skill}
+						type="Skill"
+						deleteFunction={deleteSkill}
+					/>
+					<AddOrEditSkillForm
+						open={editState}
+						closeModal={() => setEditState(false)}
+						currentSkill={skill}
+					/>
+				</Grid>
+				<Grid item xs={12}>
+					<Divider />
+				</Grid>
+				<Grid container item xs={12}>
+					<Grid item xs={2}>
+						<Typography variant="body1">Progress : </Typography>
+					</Grid>
+					<Grid item xs={2}>
+						<Typography variant="body1">{progress.toFixed(2)} % </Typography>
+					</Grid>
+
+					<Grid item xs={8} style={{ alignSelf: "center" }}>
+						<LinearProgress
+							variant="determinate"
+							value={progress}
+							style={{ borderRadius: "20px" }}
+						/>
+					</Grid>
 				</Grid>
 				<Grid item xs={12}>
 					<Tabs value={active} onChange={tabChange}>
@@ -46,14 +104,7 @@ export default function SkillPanel({ skill, classes }: SkillData) {
 				<Grid item xs={12}>
 					{active === "Missions" ? (
 						<Paper className={classes.section}>
-							<Typography
-								variant="h6"
-								align="center"
-								style={{ marginBottom: "30px" }}
-							>
-								Missions
-							</Typography>
-							<MissionsList missions={skill?.missions} />
+							<MissionsTab skillId={skill?.id} missions={skill?.missions} />
 						</Paper>
 					) : (
 						<Paper className={classes.section}>
@@ -67,3 +118,27 @@ export default function SkillPanel({ skill, classes }: SkillData) {
 		</Container>
 	);
 }
+
+const DELETE_SKILL = gql`
+	mutation deleteSkill($skillId: String!) {
+		deleteSkill(skillId: $skillId) {
+			id
+			skills {
+				id
+				title
+				categories
+				progress
+				createdAt
+				missions {
+					id
+					title
+					description
+				}
+				challenges {
+					id
+					title
+				}
+			}
+		}
+	}
+`;

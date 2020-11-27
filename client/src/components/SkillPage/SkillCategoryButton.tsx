@@ -13,11 +13,11 @@ export default function SkillCategoryButton({ category, onClick }: propsInput) {
 			style={{
 				display: "flex",
 				border: "1px solid #3f51b5",
-				borderRadius: "5px",
+				borderRadius: "20px",
 				alignItems: "center",
 				padding: "6px 7px",
-				marginRight: "10px",
-				marginBottom: "10px",
+				marginRight: "5px",
+				marginBottom: "7px",
 			}}
 		>
 			<span

@@ -28,15 +28,17 @@ interface Log {
 interface Mission {
 	id?: string;
 	title: string;
-	description: string;
-	startedAt: string;
-	finishedAt: string;
+	lastStartedAt: string;
+	createdAt: string;
+	startedAt?: string;
+	finishedAt?: string;
+	pausedAt?: string;
 	isStarted: boolean;
 	isFinished: boolean;
-	timeSpent: boolean;
-	lastStartedAt: string;
+	isPaused: boolean;
+	timeSpent: number;
+	description: string;
 	log?: Log;
-	createdAt: string;
 }
 
 interface Day {

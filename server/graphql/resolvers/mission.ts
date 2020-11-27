@@ -164,7 +164,9 @@ export default class MissionResolver {
 				currentMission.isPaused = true;
 
 				const lastStartedAt = new Date(currentMission.lastStartedAt).getTime();
-				const time = new Date().getTime() - lastStartedAt;
+				const time = Math.floor(
+					(new Date().getTime() - lastStartedAt) / 60000 / 60
+				);
 				currentMission.timeSpent += time;
 				user.skills[skillIdx].missions[missionIdx] = currentMission;
 
@@ -196,7 +198,9 @@ export default class MissionResolver {
 				currentMission.finishedAt = new Date().toISOString();
 
 				const lastStartedAt = new Date(currentMission.lastStartedAt).getTime();
-				const time = new Date().getTime() - lastStartedAt;
+				const time = Math.floor(
+					(new Date().getTime() - lastStartedAt) / 60000 / 60
+				);
 				currentMission.timeSpent += time;
 				user.skills[skillIdx].progress += currentMission.timeSpent;
 				user.skills[skillIdx].missions[missionIdx] = currentMission;

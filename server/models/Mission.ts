@@ -4,7 +4,7 @@ import { Log } from "./General";
 
 @ObjectType({ description: "The Mission Model" })
 export class Mission {
-	@Field(() => ID)
+	@Field(() => ID, { nullable: true })
 	id?: string;
 
 	@Field()
@@ -19,15 +19,15 @@ export class Mission {
 	@Prop()
 	createdAt!: string;
 
-	@Field()
+	@Field({ nullable: true })
 	@Prop()
 	startedAt?: string;
 
-	@Field()
+	@Field({ nullable: true })
 	@Prop()
 	finishedAt?: string;
 
-	@Field()
+	@Field({ nullable: true })
 	@Prop()
 	pausedAt?: string;
 
