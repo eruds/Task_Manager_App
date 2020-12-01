@@ -9,11 +9,10 @@ import {
 	TextField,
 } from "@material-ui/core";
 
-import { makeStyles } from "@material-ui/core/styles";
-
 import MissionCard from "./MissionCard";
 
 import { generalClasses } from "../styles/general";
+import { missionClasses } from "../styles/missionClasses";
 import { useForm } from "../../utils/hooks";
 import { Mission } from "../../utils/typeDefs";
 
@@ -22,52 +21,8 @@ interface MissionsData {
 	skillId?: String;
 }
 
-const missionStyles = makeStyles({
-	main: {
-		flexGrow: 1,
-		alignSelf: "center",
-		paddingLeft: "20px",
-		display: "flex",
-		flexDirection: "column",
-	},
-	title: {
-		display: "flex",
-		alignItems: "center",
-	},
-	date: {
-		marginRight: "3rem",
-		display: "flex",
-		"& p": {
-			marginTop: "10px",
-			marginBlockStart: "0",
-			marginBlockEnd: "0",
-		},
-	},
-	description: {
-		paddingLeft: "20px",
-	},
-	card: {
-		marginBottom: "10px",
-	},
-	cardContent: {
-		display: "flex",
-		padding: "10px !important",
-	},
-
-	cardSection: {
-		padding: "5px 10px",
-	},
-	cardActions: {
-		paddingLeft: "12px",
-	},
-
-	pushButton: {
-		marginLeft: "auto !important",
-	},
-});
-
 export default function MissionsTab({ skillId, missions }: MissionsData) {
-	const classes = { ...generalClasses(), ...missionStyles() };
+	const classes = { ...generalClasses(), ...missionClasses() };
 	// Dialog Handling
 	const [addMissionState, setAddMissionState] = useState<boolean>(false);
 

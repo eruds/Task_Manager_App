@@ -1,12 +1,13 @@
 import { ObjectType, ID, Field } from "type-graphql";
 import { getModelForClass, Prop } from "@typegoose/typegoose";
 
+import { MorningRoutine } from "../models/Morning";
 import { Todo } from "./Todo";
 import { Skill } from "./Skill";
 
 @ObjectType({ description: "User Model" })
 export class User {
-	@Field((type) => ID)
+	@Field(() => ID)
 	id!: string;
 
 	@Field()
@@ -24,6 +25,11 @@ export class User {
 	@Field()
 	@Prop({ required: true })
 	createdAt!: string;
+
+	//*Morning Routine
+	@Field(() => MorningRoutine, { nullable: true })
+	@Prop()
+	morning!: MorningRoutine;
 
 	//*Short term daily tasks
 	@Field(() => [Todo], { nullable: "items" })

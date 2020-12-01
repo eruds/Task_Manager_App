@@ -8,35 +8,37 @@ import { useForm } from "../../utils/hooks";
 export default function Timer() {
 	const [time, setTime] = useState<number>(20 * 60);
 	const [start, setTimer] = useState<boolean>(false);
+	const [initialTime, setInitialTime] = useState<number>(time);
 	const { values, onFormChange } = useForm(() => {}, {
 		time: "",
 	});
 
 	function startTimer() {
-		setTimer(!start);
-		if (values.time === "") {
-			values.time = 20;
+		if (values.time !== "") {
+			setTime(values.time * 60);
+			setInitialTime(time);
 		}
-		setTime(values.time * 60);
+
+		setTimer(true);
+	}
+
+	function stopTimer() {
+		setTimer(false);
+		setTime(initialTime);
 	}
 
 	useEffect(() => {
-		try {
-			if (start) {
-				if (time === 0 || !start) {
-					return () => clearTimeout(timer);
-				}
-				const timer = setTimeout(() => {
-					if (start) {
-						setTime(time - 1);
-					}
-				}, 1000);
+		if (start) {
+			const timer =
+				time > 0
+					? setTimeout(() => setTime(time - 1), 1000)
+					: setTimeout(() => {}, 1000);
+			if (time === 0) {
+				setTimer(false);
 			}
-			//! FIX THIS
-		} catch (err) {
-			console.log(err);
+			return () => clearTimeout(timer);
 		}
-	});
+	}, [time, start]);
 
 	const minutes = Math.floor(time / 60);
 	const seconds = time - minutes * 60;
@@ -71,7 +73,16 @@ export default function Timer() {
 				</Container>
 			)}
 
-			<Button onClick={() => startTimer()} fullWidth>
+			<Button
+				onClick={() => {
+					if (start) {
+						stopTimer();
+					} else {
+						startTimer();
+					}
+				}}
+				fullWidth
+			>
 				{start ? "Stop Pomo" : "Start Pomo"}
 			</Button>
 		</Container>

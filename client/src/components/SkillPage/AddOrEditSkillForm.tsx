@@ -190,7 +190,9 @@ export default function AddOrEditSkillForm({
 							style={{ marginRight: "10px", flexBasis: "90%" }}
 						>
 							{sampleCategories.map((category: any) => (
-								<MenuItem value={category}> {category} </MenuItem>
+								<MenuItem value={category} key={category}>
+									{category}
+								</MenuItem>
 							))}
 						</TextField>
 						<div
@@ -211,13 +213,15 @@ export default function AddOrEditSkillForm({
 					<div
 						style={{
 							display: "flex",
-							alignItems: "stretch",
+							alignItems: "center",
+							justifyContent: "space-between",
 							paddingTop: "20px",
 						}}
 					>
 						<p
 							style={{
 								margin: "0",
+								paddingLeft: "0px",
 								flexBasis: "20%",
 							}}
 						>
@@ -236,6 +240,7 @@ export default function AddOrEditSkillForm({
 										key={i + category}
 										category={category}
 										onClick={(e) => deleteCategory(e, category)}
+										deleteable
 									/>
 								);
 							})}

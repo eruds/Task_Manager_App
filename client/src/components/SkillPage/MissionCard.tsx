@@ -71,14 +71,36 @@ export default function MissionCard({
 			missionId: mission?.id,
 		},
 	});
+
+	const timeSpentMinutes = mission ? mission?.timeSpent % 60 : 0;
+	const timeSpentHours = mission ? Math.floor(mission?.timeSpent / 60) : 0;
+	const timeSpent =
+		timeSpentHours !== 0
+			? `${timeSpentHours} Hours and ${timeSpentMinutes} Minutes`
+			: `${timeSpentMinutes} Minutes`;
+
 	return (
 		<Card key={mission?.id} variant="outlined" className={classes.card}>
 			<CardContent className={classes.cardContent}>
 				<div className={classes.main}>
 					<div className={classes.title}>
-						<Typography variant="h6" style={{ flexGrow: 1 }}>
+						<Typography
+							variant="h6"
+							style={{
+								flexGrow: mission?.isPaused ? 0 : 1,
+								paddingRight: "20px",
+							}}
+						>
 							{mission?.title}
 						</Typography>
+						{mission?.isPaused && (
+							<Typography
+								variant="subtitle1"
+								style={{ flexGrow: 1, color: "rgba(0, 0, 0, 0.4)" }}
+							>
+								Paused
+							</Typography>
+						)}
 						<ButtonGroup>
 							<IconButton onClick={() => setConfirmDeleteDialog(true)}>
 								<DeleteForeverIcon />
@@ -111,6 +133,9 @@ export default function MissionCard({
 							</>
 						)}
 					</div>
+					<div>
+						<Typography variant="body2">Time Spent : {timeSpent}</Typography>
+					</div>
 				</div>
 			</CardContent>
 			<div className={classes.cardSection}>
@@ -127,7 +152,7 @@ export default function MissionCard({
 					) : (
 						<>
 							<Button
-								onClick={() => pauseMission}
+								onClick={() => pauseMission()}
 								disabled={mission?.isFinished}
 							>
 								Pause
@@ -140,7 +165,9 @@ export default function MissionCard({
 							</Button>
 						</>
 					)}
-					<Button className={classes.pushButton}>Add Log</Button>
+					<Button className={classes.pushButton} disabled>
+						Add Log
+					</Button>
 				</CardActions>
 			</div>
 		</Card>
@@ -186,6 +213,9 @@ const START_MISSION = gql`
 				missions {
 					id
 					isStarted
+					isPaused
+					isFinished
+					timeSpent
 					startedAt
 					lastStartedAt
 				}
@@ -203,6 +233,9 @@ const PAUSE_MISSION = gql`
 				missions {
 					id
 					isStarted
+					isPaused
+					isFinished
+					timeSpent
 					startedAt
 					lastStartedAt
 				}
@@ -220,6 +253,9 @@ const FINISH_MISSION = gql`
 				missions {
 					id
 					isStarted
+					isPaused
+					isFinished
+					timeSpent
 					startedAt
 					lastStartedAt
 				}

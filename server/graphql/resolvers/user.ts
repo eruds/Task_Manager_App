@@ -66,6 +66,10 @@ export default class userResolver {
 				createdAt: new Date().toISOString(),
 				todos: [],
 				skills: [],
+				morning: {
+					log: [],
+					schedule: [],
+				},
 			});
 
 			const user: any = await newUser.save();

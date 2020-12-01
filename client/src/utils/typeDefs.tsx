@@ -66,6 +66,24 @@ interface Skill {
 	challenges: Challenge[];
 }
 
+interface MorningItem {
+	id: string;
+	title: string;
+}
+
+interface MorningItemLog extends Partial<MorningItem> {
+	finishedAt: string;
+}
+
+interface MorningLog {
+	logs: MorningItemLog[];
+	date: string;
+}
+interface MorningRoutine {
+	log: [MorningLog[]];
+	schedule: MorningItem[];
+}
+
 interface User {
 	id?: string;
 	username: string;
@@ -74,11 +92,23 @@ interface User {
 	createdAt: string;
 	token: string;
 
-	// //*Short term daily tasks
+	//*Short term daily tasks
 	todos: Todo[];
 
-	// //* Skills you want to improve on
+	//* Skills you want to improve on
 	skills: Skill[];
+
+	//* MorningSchedule
+	morning: MorningRoutine;
 }
 
-export type { User, Todo, Skill, Mission, Challenge, SkillCategory };
+export type {
+	User,
+	Todo,
+	Skill,
+	Mission,
+	Challenge,
+	SkillCategory,
+	MorningItem,
+	MorningItemLog,
+};

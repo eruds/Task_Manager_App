@@ -90,6 +90,7 @@ type loginResponseType {
   createdAt: String!
   email: String!
   id: ID!
+  morning: MorningRoutine
   password: String!
   skills: [Skill]!
   todos: [Todo]!
@@ -120,14 +121,48 @@ input MissionInput {
   skillId: String!
 }
 
+"""Morning Item"""
+type MorningItem {
+  id: ID
+  title: String!
+}
+
+"""Morning Item Log, a singular Morning log"""
+type MorningItemLog {
+  finishedAt: String!
+  id: ID
+  title: String!
+}
+
+input MorningItemLogInput {
+  finishedAt: String!
+  id: String!
+  title: String!
+}
+
+"""Morning Log Arrays with date"""
+type MorningLog {
+  date: String!
+  logs: MorningItemLog!
+}
+
+"""Morning Routine"""
+type MorningRoutine {
+  log: [MorningLog]!
+  schedule: [MorningItem]!
+}
+
 type Mutation {
   addChallenge(data: AddChallengeInput!): User!
   addLog(Data: AddLogMissionInput!): User!
   addMission(data: AddMissionInput!): User!
+  addMorningItem(title: String!): User!
+  addMorningLog(logs: [MorningItemLogInput!]!): User!
   addSkill(data: AddSkillInput!): User!
   addTodo(title: String!): User!
   createNewUser(data: CreateUserInput!): loginResponseType!
   deleteMission(Data: MissionInput!): User!
+  deleteMorningItem(itemId: String!): User!
   deleteSkill(skillId: String!): User!
   deleteTodo(todoId: String!): User!
   editMission(Data: EditMissionInput!): User!
@@ -170,6 +205,7 @@ type User {
   createdAt: String!
   email: String!
   id: ID!
+  morning: MorningRoutine
   password: String!
   skills: [Skill]!
   todos: [Todo]!

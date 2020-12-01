@@ -4,10 +4,16 @@ import ClearIcon from "@material-ui/icons/Clear";
 
 interface propsInput {
 	category: string;
+	deleteable?: boolean;
 	onClick: (e: React.MouseEvent<HTMLButtonElement>, category: string) => void;
 }
 
-export default function SkillCategoryButton({ category, onClick }: propsInput) {
+export default function SkillCategoryButton({
+	category,
+	onClick,
+	deleteable,
+}: propsInput) {
+	deleteable = Boolean(deleteable);
 	return (
 		<div
 			style={{
@@ -16,8 +22,8 @@ export default function SkillCategoryButton({ category, onClick }: propsInput) {
 				borderRadius: "20px",
 				alignItems: "center",
 				padding: "6px 7px",
-				marginRight: "5px",
-				marginBottom: "7px",
+				marginRight: "7px",
+				marginBottom: "10px",
 			}}
 		>
 			<span
@@ -33,13 +39,19 @@ export default function SkillCategoryButton({ category, onClick }: propsInput) {
 			>
 				{category}
 			</span>
-			<IconButton
-				onClick={(e) => onClick(e, category)}
-				disableRipple
-				style={{ padding: "0 2px", color: "#3f51b5" }}
-			>
-				<ClearIcon style={{ fontSize: 15 }} />
-			</IconButton>
+			{deleteable && (
+				<IconButton
+					onClick={(e) => {
+						if (deleteable) {
+							onClick(e, category);
+						}
+					}}
+					disableRipple
+					style={{ padding: "0 2px", color: "#3f51b5" }}
+				>
+					<ClearIcon style={{ fontSize: 15 }} />
+				</IconButton>
+			)}
 		</div>
 	);
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { gql, useMutation } from "@apollo/client";
 import {
 	ButtonGroup,
+	Chip,
 	Container,
 	Divider,
 	Grid,
@@ -18,6 +19,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import MissionsTab from "./MissionsTab";
 import AddOrEditSkillForm from "./AddOrEditSkillForm";
 import DeleteConfirm from "./../general/DeleteConfirm";
+import SkillCategoryButton from "./SkillCategoryButton";
 import { Skill } from "../../utils/typeDefs";
 
 interface SkillData {
@@ -47,7 +49,7 @@ export default function SkillPanel({ skill, classes }: SkillData) {
 		setActive(newValue);
 	}
 
-	const progress = ((skill?.progress || 0) / 10000) * 100;
+	const progress = ((skill?.progress || 0) / 60 / 10000) * 100;
 	return (
 		<Container>
 			<Grid container spacing={2}>
@@ -95,6 +97,21 @@ export default function SkillPanel({ skill, classes }: SkillData) {
 						/>
 					</Grid>
 				</Grid>
+				<Grid container item xs={12}>
+					{skill?.categories.map((category: any, i: number) => {
+						return (
+							<Chip
+								label={category}
+								key={i + category}
+								variant="outlined"
+								color="primary"
+								// color={i % 2 === 0 ? "primary" : "secondary"}
+								style={{ marginRight: "6px" }}
+							/>
+						);
+					})}
+				</Grid>
+
 				<Grid item xs={12}>
 					<Tabs value={active} onChange={tabChange}>
 						<Tab label="Missions" value="Missions" />

@@ -27,6 +27,11 @@ export const generalClasses = makeStyles({
 		display: "flex",
 		flexDirection: "column",
 	},
+
+	columnCenterItem: {
+		display: "flex",
+		justifyContent: "center",
+	},
 });
 
 export const formErrorMessage = makeStyles({

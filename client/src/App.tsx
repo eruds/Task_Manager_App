@@ -25,6 +25,7 @@ import Register from "./components/Register";
 import TodoList from "./components/TodoList/TodoList";
 import Skills from "./components/SkillPage/SkillsPage";
 import WorkoutPage from "./components/WorkoutPage/WorkoutPage";
+import MorningPage from "./components/MorningPage/MorningPage";
 
 import "./App.css";
 
@@ -85,6 +86,13 @@ export default function App() {
 									redirect="/home"
 									nonUser={false}
 									component={Register}
+								/>
+								<AuthRoute
+									exact
+									path="/morning"
+									redirect="/home"
+									nonUser={true}
+									component={MorningPage}
 								/>
 								<AuthRoute
 									exact
