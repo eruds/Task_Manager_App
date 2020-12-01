@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useQuery, gql, useMutation } from "@apollo/client";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import {
 	Button,
 	Container,
@@ -13,7 +14,7 @@ import MorningItemCard from "./MorningItemCard";
 
 import { generalClasses } from "../styles/general";
 import { AuthContext } from "../../context/auth";
-import { MorningItem, MorningItemLog } from "../../utils/typeDefs";
+import { MorningItem } from "../../utils/typeDefs";
 import { useForm } from "../../utils/hooks";
 
 interface MorningItemLogInput {
@@ -22,48 +23,9 @@ interface MorningItemLogInput {
 	finishedAt: string;
 }
 
-function MorningTimer({
-	isFinished,
-	className,
-}: {
-	isFinished: boolean;
-	className: any;
-}) {
-	const [time, setTime] = useState<number>(0);
-	useEffect(() => {
-		if (!isFinished) {
-			const timer = setInterval(() => {
-				setTime(time + 1);
-			}, 1000);
-			return () => {
-				clearInterval(timer);
-			};
-		}
-	}, [time, isFinished]);
-
-	const seconds = time;
-	const mins = Math.floor(seconds / 60);
-	const hours = Math.floor(mins / 60);
-	const formatedSeconds = (seconds % 60 < 10 ? "0" : "") + (seconds % 60);
-	const formatedMinutes = (mins < 10 ? "0" : "") + (mins % 60);
-	const formatedHours = (hours < 10 ? "0" : "") + (hours % 60);
-	const formatedTime: string =
-		formatedHours + " : " + formatedMinutes + " : " + formatedSeconds;
-	return (
-		<div className={className} style={{ marginBottom: "20px" }}>
-			<Typography variant="h5">{formatedTime}</Typography>
-		</div>
-	);
-}
-
 export default function MorningPage() {
 	const classes = { ...generalClasses() };
 	const { user } = useContext(AuthContext);
-
-	// Form
-	const { values, onSubmit, onFormChange } = useForm(callAddMorningItem, {
-		title: "",
-	});
 
 	// Fetching data
 	const { data, loading } = useQuery(FETCH_SCHEDULE, {
@@ -79,6 +41,12 @@ export default function MorningPage() {
 		? []
 		: data.returnUserData.morning?.schedule;
 
+	//* Form and Adding Task to Morning Schedule
+	// Form Handler
+	const { values, onSubmit, onFormChange } = useForm(callAddMorningItem, {
+		title: "",
+	});
+
 	// Add MorningItem
 	const [addMorningItem] = useMutation(ADD_ITEM, {
 		onError(err) {
@@ -88,9 +56,13 @@ export default function MorningPage() {
 	});
 
 	function callAddMorningItem() {
-		addMorningItem();
+		if (values.title !== "") {
+			addMorningItem();
+		}
+		//! Add Alert Here
 	}
 
+	//* Handling State Change for each morning item
 	// ActiveItem
 	const [active, setActive] = useState<number>(0);
 
@@ -110,6 +82,14 @@ export default function MorningPage() {
 		setFinishedTime([...finishedTime, time]);
 	};
 
+	// Cancel the morning routine
+	const cancelMorning = () => {
+		setStarted(false);
+		setActive(0);
+		setFinishedTime([]);
+	};
+
+	//* Sending Data to Backend when Routine is Finished
 	// Add Log
 	const [morningLogs, setMorningLogs] = useState<MorningItemLogInput[]>([]);
 	const [sendData, setSendData] = useState<boolean>(false);
@@ -122,8 +102,6 @@ export default function MorningPage() {
 			logs: morningLogs,
 		},
 	});
-
-	// console.log(morningLogs);
 
 	// Finish Morning Routine
 	const finishMorning = () => {
@@ -145,16 +123,52 @@ export default function MorningPage() {
 		setSendData(true);
 	};
 
+	// Adding Morning Routine to Backend
+
 	useEffect(() => {
 		addMorningLog();
 	}, [morningLogs, sendData]);
 
-	// Cancel the morning routine
+	//* Drag and Drop Functions
+	// Edit State handler
+	const [editState, setEditState] = useState<boolean>(false);
 
-	const cancelMorning = () => {
-		setStarted(false);
-		setActive(0);
-		setFinishedTime([]);
+	// Current schedule to edit
+	const [currentSchedule, setCurrentSchedule] = useState(schedule);
+
+	useEffect(() => {
+		setCurrentSchedule(schedule);
+	}, [schedule]);
+
+	// Reordering function
+	const reorder = (
+		list: MorningItem[],
+		startIndex: number,
+		endIndex: number
+	): MorningItem[] => {
+		const result = Array.from(list);
+		const [removed] = result.splice(startIndex, 1);
+		result.splice(endIndex, 0, removed);
+		return result;
+	};
+
+	// Triggers function when drag ended
+	const onDragEnd = (result: any) => {
+		if (!result.destination) {
+			return;
+		}
+
+		if (result.destination.index === result.source.index) {
+			return;
+		}
+
+		const items: MorningItem[] = reorder(
+			currentSchedule,
+			result.source.index,
+			result.destination.index
+		);
+
+		setCurrentSchedule(items);
 	};
 
 	return (
@@ -194,8 +208,23 @@ export default function MorningPage() {
 											paddingTop: "10px",
 										}}
 									>
-										<Button onClick={() => setStarted(true)}>Start</Button>
-										<Button type="submit"> Add Task </Button>
+										{!editState && (
+											<>
+												{currentSchedule.length > 0 && (
+													<Button
+														onClick={() => {
+															setStarted(false);
+														}}
+													>
+														Start
+													</Button>
+												)}
+												<Button type="submit"> Add Task </Button>
+											</>
+										)}
+										<Button onClick={() => setEditState(!editState)}>
+											{editState ? "Confirm" : "Edit"}
+										</Button>
 									</div>
 								</form>
 							</>
@@ -215,25 +244,68 @@ export default function MorningPage() {
 							</>
 						)}
 					</div>
-					<div>
-						{schedule &&
-							schedule.map((item: any, i: number) => {
-								return (
-									<MorningItemCard
-										key={item.id}
-										item={item}
-										started={started}
-										isActive={active === i}
-										changeActive={changeActive}
-										finishedAt={finishedTime[i]}
-										setFinishedAt={addNewFinishedTime}
-									/>
-								);
-							})}
-					</div>
+					<DragDropContext onDragEnd={onDragEnd}>
+						<Droppable droppableId="Morning_Routine_List">
+							{(provided) => (
+								<div ref={provided.innerRef} {...provided.droppableProps}>
+									{schedule &&
+										currentSchedule.map((item: any, i: number) => {
+											return (
+												<MorningItemCard
+													key={item.id}
+													item={item}
+													isDragDisabled={!editState}
+													index={i}
+													started={started}
+													isActive={active === i}
+													changeActive={changeActive}
+													finishedAt={finishedTime[i]}
+													setFinishedAt={addNewFinishedTime}
+												/>
+											);
+										})}
+									{provided.placeholder}
+								</div>
+							)}
+						</Droppable>
+					</DragDropContext>
 				</div>
 			</Paper>
 		</Container>
+	);
+}
+
+function MorningTimer({
+	isFinished,
+	className,
+}: {
+	isFinished: boolean;
+	className: any;
+}) {
+	const [time, setTime] = useState<number>(0);
+	useEffect(() => {
+		if (!isFinished) {
+			const timer = setInterval(() => {
+				setTime(time + 1);
+			}, 1000);
+			return () => {
+				clearInterval(timer);
+			};
+		}
+	}, [time, isFinished]);
+
+	const seconds = time;
+	const mins = Math.floor(seconds / 60);
+	const hours = Math.floor(mins / 60);
+	const formatedSeconds = (seconds % 60 < 10 ? "0" : "") + (seconds % 60);
+	const formatedMinutes = (mins < 10 ? "0" : "") + (mins % 60);
+	const formatedHours = (hours < 10 ? "0" : "") + (hours % 60);
+	const formatedTime: string =
+		formatedHours + " : " + formatedMinutes + " : " + formatedSeconds;
+	return (
+		<div className={className} style={{ marginBottom: "20px" }}>
+			<Typography variant="h5">{formatedTime}</Typography>
+		</div>
 	);
 }
 

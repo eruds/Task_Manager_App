@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { gql, useMutation } from "@apollo/client";
+import { Draggable } from "react-beautiful-dnd";
 import moment from "moment";
 import {
 	Button,
@@ -15,20 +16,24 @@ import { MorningItem } from "../../utils/typeDefs";
 
 interface MorningItemCardProps {
 	item: MorningItem;
+	index: number;
 	finishedAt?: string;
 	setFinishedAt: any;
 	started?: boolean;
 	isActive?: boolean;
 	changeActive: any;
+	isDragDisabled: boolean;
 }
 
 export default function MorningItemCard({
 	item,
+	index,
 	finishedAt,
 	setFinishedAt,
 	started,
 	isActive,
 	changeActive,
+	isDragDisabled,
 }: MorningItemCardProps) {
 	// Delete MorningItem
 	const [deleteMorningItem] = useMutation(DELETE_ITEM, {
@@ -47,32 +52,45 @@ export default function MorningItemCard({
 	};
 
 	return (
-		<Card variant="outlined" style={{ marginBottom: "10px" }}>
-			<CardContent style={{ display: "flex" }}>
-				<div style={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
-					<Typography variant="body1">{item.title}</Typography>
-				</div>
-				{started ? (
-					isActive ? (
-						<Button
-							onClick={(e) => {
-								finishTask();
-							}}
-						>
-							Finish
-						</Button>
-					) : (
-						<div>
-							<Typography variant="body1">{finishedAt}</Typography>
+		<Draggable
+			draggableId={item.id}
+			index={index}
+			isDragDisabled={isDragDisabled}
+		>
+			{(provided) => (
+				<Card
+					variant="outlined"
+					ref={provided.innerRef}
+					{...provided.draggableProps}
+					{...provided.dragHandleProps}
+				>
+					<CardContent style={{ display: "flex" }}>
+						<div style={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
+							<Typography variant="body1">{item.title}</Typography>
 						</div>
-					)
-				) : (
-					<IconButton onClick={() => deleteMorningItem()}>
-						<DeleteForeverIcon />
-					</IconButton>
-				)}
-			</CardContent>
-		</Card>
+						{started ? (
+							isActive ? (
+								<Button
+									onClick={(e) => {
+										finishTask();
+									}}
+								>
+									Finish
+								</Button>
+							) : (
+								<div>
+									<Typography variant="body1">{finishedAt}</Typography>
+								</div>
+							)
+						) : (
+							<IconButton onClick={() => deleteMorningItem()}>
+								<DeleteForeverIcon />
+							</IconButton>
+						)}
+					</CardContent>
+				</Card>
+			)}
+		</Draggable>
 	);
 }
 
