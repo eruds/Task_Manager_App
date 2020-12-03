@@ -9,10 +9,17 @@ import {
 	IconButton,
 	Typography,
 } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 
 import { MorningItem } from "../../utils/typeDefs";
+
+const morningCardClasses = makeStyles({
+	card: {
+		marginBottom: "10px",
+	},
+});
 
 interface MorningItemCardProps {
 	item: MorningItem;
@@ -35,6 +42,8 @@ export default function MorningItemCard({
 	changeActive,
 	isDragDisabled,
 }: MorningItemCardProps) {
+	const classes = morningCardClasses();
+
 	// Delete MorningItem
 	const [deleteMorningItem] = useMutation(DELETE_ITEM, {
 		onError(err) {
@@ -63,6 +72,7 @@ export default function MorningItemCard({
 					ref={provided.innerRef}
 					{...provided.draggableProps}
 					{...provided.dragHandleProps}
+					className={classes.card}
 				>
 					<CardContent style={{ display: "flex" }}>
 						<div style={{ flexGrow: 1, display: "flex", alignItems: "center" }}>

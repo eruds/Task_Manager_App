@@ -10,7 +10,7 @@ import {
 import { UserInputError } from "apollo-server";
 
 import { UserModel, User } from "../../models/User";
-import { MorningItemLog, MorningLog } from "../../models/Morning";
+import { MorningItem, MorningItemLog, MorningLog } from "../../models/Morning";
 import { checkAuth } from "../../utils/checkAuth";
 
 @InputType()
@@ -23,6 +23,15 @@ class MorningItemLogInput implements MorningItemLog {
 
 	@Field()
 	finishedAt!: string;
+}
+
+@InputType()
+class MorningItemInput implements MorningItem {
+	@Field()
+	id?: string;
+
+	@Field()
+	title!: string;
 }
 
 @Resolver()
@@ -89,6 +98,25 @@ export default class MorningResolver {
 					date: new Date().toISOString(),
 				};
 				user.morning.log.push(newLog);
+				user.save();
+				return user;
+			} else {
+				throw new UserInputError("User not found");
+			}
+		}
+	}
+
+	@Mutation(() => User)
+	async saveSchedule(
+		@Arg("items", (type) => [MorningItemInput])
+		items: MorningItemInput[],
+		@Ctx() ctx: { authHeader: string }
+	) {
+		const authorizedUser: any = checkAuth(ctx);
+		if (authorizedUser) {
+			const user = await UserModel.findById(authorizedUser.id);
+			if (user) {
+				user.morning.schedule = items;
 				user.save();
 				return user;
 			} else {

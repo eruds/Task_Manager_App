@@ -58,6 +58,10 @@ export default class MissionResolver {
 				const missionIdx = user.skills[skillIdx].missions.findIndex(
 					(mission) => mission.id === missionId
 				);
+
+				const currentMission = user.skills[skillIdx].missions[missionIdx];
+
+				user.skills[skillIdx].progress -= currentMission.timeSpent;
 				user.skills[skillIdx].missions.splice(missionIdx, 1);
 				await user.save();
 				return user;
@@ -99,6 +103,38 @@ export default class MissionResolver {
 				};
 
 				user.skills[skillIdx].missions[missionIdx] = mission;
+				await user.save();
+				return user;
+			} else {
+				throw new UserInputError("User not found");
+			}
+		}
+	}
+
+	@Mutation(() => User)
+	async resetMission(
+		@Arg("Data") { skillId, missionId }: MissionInput,
+		@Ctx() ctx: { authHeader: string }
+	) {
+		const authorizedUser: any = checkAuth(ctx);
+		if (authorizedUser) {
+			const user = await UserModel.findById(authorizedUser.id);
+			if (user) {
+				const skillIdx = user.skills.findIndex((skill) => skill.id === skillId);
+				const missionIdx = user.skills[skillIdx].missions.findIndex(
+					(mission) => mission.id === missionId
+				);
+				const currentMission: Mission =
+					user.skills[skillIdx].missions[missionIdx];
+
+				currentMission.isStarted = false;
+				currentMission.isPaused = false;
+				currentMission.lastStartedAt = "";
+				currentMission.startedAt = undefined;
+				currentMission.pausedAt = undefined;
+				currentMission.timeSpent = 0;
+				user.skills[skillIdx].missions[missionIdx] = currentMission;
+
 				await user.save();
 				return user;
 			} else {

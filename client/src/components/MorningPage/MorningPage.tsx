@@ -11,6 +11,7 @@ import {
 import WbSunnyOutlinedIcon from "@material-ui/icons/WbSunnyOutlined";
 
 import MorningItemCard from "./MorningItemCard";
+import ErrorPopup from "../general/ErrorPopup";
 
 import { generalClasses } from "../styles/general";
 import { AuthContext } from "../../context/auth";
@@ -21,6 +22,11 @@ interface MorningItemLogInput {
 	id: string;
 	title: string;
 	finishedAt: string;
+}
+
+interface MorningItemInput {
+	id: string;
+	title: string;
 }
 
 export default function MorningPage() {
@@ -59,7 +65,6 @@ export default function MorningPage() {
 		if (values.title !== "") {
 			addMorningItem();
 		}
-		//! Add Alert Here
 	}
 
 	//* Handling State Change for each morning item
@@ -127,6 +132,7 @@ export default function MorningPage() {
 
 	useEffect(() => {
 		addMorningLog();
+		setSendData(false);
 	}, [morningLogs, sendData]);
 
 	//* Drag and Drop Functions
@@ -171,107 +177,137 @@ export default function MorningPage() {
 		setCurrentSchedule(items);
 	};
 
-	return (
-		<Container className={classes.columnCenterItem}>
-			<Paper
-				className={classes.main + " " + classes.columnContainer}
-				style={{ alignItems: "center" }}
-			>
-				<div className={classes.section} style={{ minWidth: "30vw" }}>
-					<div className={classes.content + " " + classes.columnCenterItem}>
-						<WbSunnyOutlinedIcon style={{ fontSize: 150 }} />
-					</div>
-					<div className={classes.columnCenterItem}>
-						<Typography variant="h4" align="center">
-							Start your morning!
-						</Typography>
-					</div>
+	// Save Schedule Mutation
+	const [scheduleItems, setScheduleItems] = useState<MorningItem[]>();
+	const [saveSchedule] = useMutation(SAVE_SCHEDULE, {
+		onError(err) {
+			console.log(err);
+		},
+		variables: {
+			items: scheduleItems,
+		},
+	});
 
-					<div className={classes.content + " " + classes.columnContainer}>
-						{!started ? (
-							<>
-								<Typography variant="h6" className={classes.columnCenterItem}>
-									Add New Task
-								</Typography>
-								<form action="submit" onSubmit={onSubmit} autoComplete="off">
-									<TextField
-										id="title"
-										value={values.title}
-										onChange={onFormChange}
-										helperText="Add a new routine to your morning"
-										fullWidth
+	const confirmSchedule = () => {
+		setEditState(false);
+		const items: MorningItem[] = currentSchedule.map((item: any) => ({
+			id: item.id,
+			title: item.title,
+		}));
+		setScheduleItems(items);
+	};
+
+	useEffect(() => {
+		saveSchedule();
+	}, [scheduleItems]);
+	// backgroundColor: "#282C34"
+	return (
+		<div>
+			<Container className={classes.columnCenterItem}>
+				<Paper
+					className={classes.main + " " + classes.columnContainer}
+					style={{ alignItems: "center" }}
+				>
+					<div className={classes.section} style={{ minWidth: "30vw" }}>
+						<div className={classes.content + " " + classes.columnCenterItem}>
+							<WbSunnyOutlinedIcon style={{ fontSize: 150 }} />
+						</div>
+						<div className={classes.columnCenterItem}>
+							<Typography variant="h4" align="center">
+								Start your morning!
+							</Typography>
+						</div>
+
+						<div className={classes.content + " " + classes.columnContainer}>
+							{!started ? (
+								<>
+									<Typography variant="h6" className={classes.columnCenterItem}>
+										Add New Task
+									</Typography>
+									<form action="submit" onSubmit={onSubmit} autoComplete="off">
+										<TextField
+											id="title"
+											value={values.title}
+											onChange={onFormChange}
+											helperText="Add a new routine to your morning"
+											fullWidth
+										/>
+										<div
+											style={{
+												display: "flex",
+												justifyContent: "center",
+												paddingTop: "10px",
+											}}
+										>
+											{!editState && (
+												<>
+													{currentSchedule.length > 0 && (
+														<Button
+															onClick={() => {
+																setStarted(true);
+															}}
+														>
+															Start
+														</Button>
+													)}
+													<Button type="submit"> Add Task </Button>
+												</>
+											)}
+											{!editState ? (
+												<Button onClick={() => setEditState(true)}>Edit</Button>
+											) : (
+												<Button onClick={() => confirmSchedule()}>
+													Confirm
+												</Button>
+											)}
+										</div>
+									</form>
+								</>
+							) : (
+								<>
+									<MorningTimer
+										isFinished={active === schedule.length}
+										className={classes.columnCenterItem}
 									/>
 									<div
-										style={{
-											display: "flex",
-											justifyContent: "center",
-											paddingTop: "10px",
-										}}
+										className={classes.horizontalContainer}
+										style={{ justifyContent: "center" }}
 									>
-										{!editState && (
-											<>
-												{currentSchedule.length > 0 && (
-													<Button
-														onClick={() => {
-															setStarted(false);
-														}}
-													>
-														Start
-													</Button>
-												)}
-												<Button type="submit"> Add Task </Button>
-											</>
-										)}
-										<Button onClick={() => setEditState(!editState)}>
-											{editState ? "Confirm" : "Edit"}
-										</Button>
+										<Button onClick={() => finishMorning()}>Finish</Button>
+										<Button onClick={() => cancelMorning()}>Cancel</Button>
 									</div>
-								</form>
-							</>
-						) : (
-							<>
-								<MorningTimer
-									isFinished={active === schedule.length}
-									className={classes.columnCenterItem}
-								/>
-								<div
-									className={classes.horizontalContainer}
-									style={{ justifyContent: "center" }}
-								>
-									<Button onClick={() => finishMorning()}>Finish</Button>
-									<Button onClick={() => cancelMorning()}>Cancel</Button>
-								</div>
-							</>
-						)}
-					</div>
-					<DragDropContext onDragEnd={onDragEnd}>
-						<Droppable droppableId="Morning_Routine_List">
-							{(provided) => (
-								<div ref={provided.innerRef} {...provided.droppableProps}>
-									{schedule &&
-										currentSchedule.map((item: any, i: number) => {
-											return (
-												<MorningItemCard
-													key={item.id}
-													item={item}
-													isDragDisabled={!editState}
-													index={i}
-													started={started}
-													isActive={active === i}
-													changeActive={changeActive}
-													finishedAt={finishedTime[i]}
-													setFinishedAt={addNewFinishedTime}
-												/>
-											);
-										})}
-									{provided.placeholder}
-								</div>
+								</>
 							)}
-						</Droppable>
-					</DragDropContext>
-				</div>
-			</Paper>
-		</Container>
+						</div>
+						<DragDropContext onDragEnd={onDragEnd}>
+							<Droppable droppableId="Morning_Routine_List">
+								{(provided) => (
+									<div ref={provided.innerRef} {...provided.droppableProps}>
+										{schedule &&
+											currentSchedule.map((item: any, i: number) => {
+												return (
+													<MorningItemCard
+														key={item.id}
+														item={item}
+														isDragDisabled={!editState}
+														index={i}
+														started={started}
+														isActive={active === i}
+														changeActive={changeActive}
+														finishedAt={finishedTime[i]}
+														setFinishedAt={addNewFinishedTime}
+													/>
+												);
+											})}
+										{provided.placeholder}
+									</div>
+								)}
+							</Droppable>
+						</DragDropContext>
+					</div>
+				</Paper>
+			</Container>
+		</div>
 	);
 }
 
@@ -340,6 +376,20 @@ const ADD_ITEM = gql`
 const ADD_LOG = gql`
 	mutation addMorningLog($logs: [MorningItemLogInput!]!) {
 		addMorningLog(logs: $logs) {
+			id
+			morning {
+				schedule {
+					id
+					title
+				}
+			}
+		}
+	}
+`;
+
+const SAVE_SCHEDULE = gql`
+	mutation saveSchedule($items: [MorningItemInput!]!) {
+		saveSchedule(items: $items) {
 			id
 			morning {
 				schedule {

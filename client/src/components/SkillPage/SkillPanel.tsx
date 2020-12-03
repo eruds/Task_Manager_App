@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import {
 	ButtonGroup,
@@ -19,7 +19,6 @@ import EditIcon from "@material-ui/icons/Edit";
 import MissionsTab from "./MissionsTab";
 import AddOrEditSkillForm from "./AddOrEditSkillForm";
 import DeleteConfirm from "./../general/DeleteConfirm";
-import SkillCategoryButton from "./SkillCategoryButton";
 import { Skill } from "../../utils/typeDefs";
 
 interface SkillData {
@@ -103,8 +102,8 @@ export default function SkillPanel({ skill, classes }: SkillData) {
 							<Chip
 								label={category}
 								key={i + category}
-								variant="outlined"
-								color="primary"
+								// variant="outlined"
+								// color="primary"
 								// color={i % 2 === 0 ? "primary" : "secondary"}
 								style={{ marginRight: "6px" }}
 							/>

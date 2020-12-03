@@ -39,13 +39,13 @@ export default function MissionsTab({ skillId, missions }: MissionsData) {
 		},
 		variables: {
 			skillId,
-			...values,
+			title: values.title.trim(),
+			description: values.description.trim(),
 		},
 	});
 
 	function callAddMission() {
 		addMission();
-		// window.location.pathrename = "/skills";
 	}
 	return (
 		<div className={classes.columnContainer}>
@@ -81,7 +81,6 @@ export default function MissionsTab({ skillId, missions }: MissionsData) {
 							type="submit"
 							onClick={() => {
 								setAddMissionState(false);
-								// window.location.pathname = "/skills";
 							}}
 						>
 							Add Mission

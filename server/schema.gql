@@ -3,18 +3,11 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
-"""Add Challenge Input Type"""
-input AddChallengeInput {
+"""Input Type for Log"""
+input AddLogInput {
+  challengeId: String!
+  dayNum: Float!
   description: String!
-  duration: Int!
-  skillId: ID!
-  title: String!
-}
-
-"""Add Mission Log input type """
-input AddLogMissionInput {
-  description: String!
-  missionId: String!
   skillId: String!
 }
 
@@ -34,10 +27,21 @@ input AddSkillInput {
 
 """The Challenge Model"""
 type Challenge {
+  days: [Day]!
   description: String!
   duration: Int!
+  finishedAt: String!
   id: ID!
   startedAt: String!
+  title: String!
+}
+
+"""Input for adding new Challenge"""
+input CreateChallengeInput {
+  days: [DayInput]!
+  description: String!
+  duration: Int!
+  skillId: String!
   title: String!
 }
 
@@ -47,6 +51,24 @@ input CreateUserInput {
   email: String!
   password: String!
   username: String!
+}
+
+"""The Day Model"""
+type Day {
+  completed: Boolean!
+  log: Log!
+  title: String!
+}
+
+"""Input type for each day in a challenge"""
+input DayInput {
+  completed: Boolean!
+  title: String!
+}
+
+input DeleteChallengeInput {
+  challengeId: String!
+  skillId: String!
 }
 
 """Edit Mission input type """
@@ -127,6 +149,11 @@ type MorningItem {
   title: String!
 }
 
+input MorningItemInput {
+  id: String!
+  title: String!
+}
+
 """Morning Item Log, a singular Morning log"""
 type MorningItemLog {
   finishedAt: String!
@@ -153,14 +180,15 @@ type MorningRoutine {
 }
 
 type Mutation {
-  addChallenge(data: AddChallengeInput!): User!
-  addLog(Data: AddLogMissionInput!): User!
+  addLog(Data: AddLogInput!): User!
   addMission(data: AddMissionInput!): User!
   addMorningItem(title: String!): User!
   addMorningLog(logs: [MorningItemLogInput!]!): User!
   addSkill(data: AddSkillInput!): User!
   addTodo(title: String!): User!
+  createChallenge(Data: CreateChallengeInput!): User!
   createNewUser(data: CreateUserInput!): loginResponseType!
+  deleteChallenge(Data: DeleteChallengeInput!): User!
   deleteMission(Data: MissionInput!): User!
   deleteMorningItem(itemId: String!): User!
   deleteSkill(skillId: String!): User!
@@ -171,6 +199,8 @@ type Mutation {
   finishMission(Data: MissionInput!): User!
   login(data: LoginInput!): loginResponseType!
   pauseMission(Data: MissionInput!): User!
+  resetMission(Data: MissionInput!): User!
+  saveSchedule(items: [MorningItemInput!]!): User!
   startMission(Data: MissionInput!): User!
 }
 

@@ -2,16 +2,18 @@ import { ObjectType, ID, Field, Int, InputType } from "type-graphql";
 import { Prop } from "@typegoose/typegoose";
 import { Log } from "./General";
 
-@InputType({ description: "The Day Input Type " })
 @ObjectType({ description: "The Day Model" })
 export class Day {
 	@Field()
+	@Prop()
 	title!: string;
 
 	@Field()
+	@Prop()
 	completed!: boolean;
 
 	@Field()
+	@Prop()
 	log!: Log;
 }
 
@@ -36,7 +38,11 @@ export class Challenge {
 	@Prop()
 	startedAt!: string;
 
-	// @Field(() => [Day], { nullable: "items" })
-	// @Prop({ type: () => [Day] })
-	// days!: Array<Day>;
+	@Field()
+	@Prop()
+	finishedAt?: string;
+
+	@Field(() => [Day], { nullable: "items" })
+	@Prop({ type: () => [Day] })
+	days!: Array<Day>;
 }

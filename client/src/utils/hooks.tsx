@@ -40,3 +40,24 @@ export const useModal = () => {
 		closeModal,
 	};
 };
+
+export const useSnackbar = () => {
+	const [open, setOpen] = useState(false);
+
+	const openErrorMessage = () => {
+		setOpen(true);
+	};
+
+	const closeErrorMessage = (event?: React.SyntheticEvent, reason?: string) => {
+		if (reason === "clickaway") {
+			return;
+		}
+
+		setOpen(false);
+	};
+	return {
+		open,
+		openErrorMessage,
+		closeErrorMessage,
+	};
+};

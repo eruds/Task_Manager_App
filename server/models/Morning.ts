@@ -2,7 +2,7 @@ import { ObjectType, ID, Field, Int } from "type-graphql";
 import { Prop, Ref } from "@typegoose/typegoose";
 
 @ObjectType({ description: "Morning Item" })
-class MorningItem {
+export class MorningItem {
 	@Field(() => ID, { nullable: true })
 	id?: string;
 

@@ -8,13 +8,16 @@ import {
 	Card,
 	CardContent,
 	CardActions,
-	Checkbox,
+	TextField,
 	Typography,
 } from "@material-ui/core";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import EditIcon from "@material-ui/icons/Edit";
+import HistoryOutlinedIcon from "@material-ui/icons/HistoryOutlined";
 
 import DeleteConfirm from "./../general/DeleteConfirm";
+import ConfirmResetMission from "./ConfirmResetMission";
+import TextInputField from "./../general/TextInputField";
 import { Mission } from "../../utils/typeDefs";
 
 interface MissionData {
@@ -28,6 +31,7 @@ export default function MissionCard({
 	skillId,
 	classes,
 }: MissionData) {
+	// * Delete Dialog Confirmation and Mutation
 	const [confirmDeleteDialog, setConfirmDeleteDialog] = useState<boolean>(
 		false
 	);
@@ -42,6 +46,8 @@ export default function MissionCard({
 		},
 	});
 
+	//* Start Mission Mutation
+
 	const [startMission] = useMutation(START_MISSION, {
 		onError(err) {
 			console.log(err);
@@ -51,6 +57,22 @@ export default function MissionCard({
 			missionId: mission?.id,
 		},
 	});
+
+	//* Reset current progress confirm and mutation
+
+	const [confirmResetDialog, setConfirmResetDialog] = useState<boolean>(false);
+
+	const [resetMission] = useMutation(RESET_MISSION, {
+		onError(err) {
+			console.log(err);
+		},
+		variables: {
+			skillId: skillId,
+			missionId: mission?.id,
+		},
+	});
+
+	// * Pause and Finish Mission Mutation
 
 	const [pauseMission] = useMutation(PAUSE_MISSION, {
 		onError(err) {
@@ -72,28 +94,97 @@ export default function MissionCard({
 		},
 	});
 
+	//* Functions to Edit The Current Mission
+
+	// Prerequisite States
+	const [editState, setEditState] = useState<boolean>(false);
+
+	const [currentMission, setCurrentMission] = useState<Mission>(
+		mission || {
+			title: "",
+			lastStartedAt: "",
+			createdAt: "",
+			isStarted: false,
+			isFinished: false,
+			isPaused: false,
+			timeSpent: 0,
+			description: "",
+		}
+	);
+	// Mutation
+	const [editMission] = useMutation(EDIT_MISSION, {
+		onError(err) {
+			console.log(err);
+		},
+		variables: {
+			skillId: skillId,
+			missionId: mission?.id,
+			description: currentMission.description.trim(),
+			title: currentMission.title.trim(),
+		},
+	});
+
+	// Text field handlers
+	const changeTitle = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) => {
+		setCurrentMission({
+			...currentMission,
+			title: e.target.value,
+		});
+	};
+
+	const changeDescription = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) => {
+		setCurrentMission({
+			...currentMission,
+			description: e.target.value,
+		});
+	};
+
+	const submitEdit = () => {
+		setEditState(false);
+		editMission();
+	};
+
+	//* Time Formatting
 	const timeSpentMinutes = mission ? mission?.timeSpent % 60 : 0;
 	const timeSpentHours = mission ? Math.floor(mission?.timeSpent / 60) : 0;
 	const timeSpent =
 		timeSpentHours !== 0
 			? `${timeSpentHours} Hours and ${timeSpentMinutes} Minutes`
 			: `${timeSpentMinutes} Minutes`;
-
 	return (
 		<Card key={mission?.id} variant="outlined" className={classes.card}>
 			<CardContent className={classes.cardContent}>
 				<div className={classes.main}>
 					<div className={classes.title}>
-						<Typography
-							variant="h6"
-							style={{
-								flexGrow: mission?.isPaused ? 0 : 1,
-								paddingRight: "20px",
-							}}
-						>
-							{mission?.title}
-						</Typography>
-						{mission?.isPaused && (
+						{!editState ? (
+							<Typography
+								variant="h6"
+								style={{
+									flexGrow: mission?.isPaused ? 0 : 1,
+									paddingRight: "20px",
+								}}
+							>
+								{currentMission.title}
+							</Typography>
+						) : (
+							<TextInputField
+								value={currentMission?.title}
+								onChange={changeTitle}
+								style={{
+									flexGrow: 1,
+									fontSize: "1.25rem",
+									fontFamily: "Roboto",
+									fontWeight: 500,
+									letterSpacing: "0.0075em",
+									color: "rgba(0, 0, 0, 0.87)",
+								}}
+							/>
+						)}
+						{mission?.isPaused && !editState && (
 							<Typography
 								variant="subtitle1"
 								style={{ flexGrow: 1, color: "rgba(0, 0, 0, 0.4)" }}
@@ -102,20 +193,35 @@ export default function MissionCard({
 							</Typography>
 						)}
 						<ButtonGroup>
-							<IconButton onClick={() => setConfirmDeleteDialog(true)}>
-								<DeleteForeverIcon />
-							</IconButton>
-							<DeleteConfirm
-								open={confirmDeleteDialog}
-								setOpen={setConfirmDeleteDialog}
-								item={mission}
-								type="Mission"
-								deleteFunction={deleteMission}
-							/>
-							<IconButton>
-								<EditIcon />
-							</IconButton>
+							{!mission?.isFinished && !mission?.isStarted && (
+								<>
+									<IconButton onClick={() => setConfirmResetDialog(true)}>
+										<HistoryOutlinedIcon />
+									</IconButton>
+									<IconButton onClick={() => setEditState(true)}>
+										<EditIcon />
+									</IconButton>
+								</>
+							)}
+							{(!mission?.isStarted || mission?.isFinished) && (
+								<IconButton onClick={() => setConfirmDeleteDialog(true)}>
+									<DeleteForeverIcon />
+								</IconButton>
+							)}
 						</ButtonGroup>
+
+						<DeleteConfirm
+							open={confirmDeleteDialog}
+							setOpen={setConfirmDeleteDialog}
+							item={mission}
+							type="Mission"
+							deleteFunction={deleteMission}
+						/>
+						<ConfirmResetMission
+							open={confirmResetDialog}
+							setOpen={setConfirmResetDialog}
+							resetFunction={resetMission}
+						/>
 					</div>
 
 					<div className={classes.date}>
@@ -139,16 +245,35 @@ export default function MissionCard({
 				</div>
 			</CardContent>
 			<div className={classes.cardSection}>
-				{mission?.description !== "" && (
-					<Typography variant="subtitle1" className={classes.description}>
-						{mission?.description}
-					</Typography>
+				{editState ? (
+					<div style={{ padding: "0 20px" }}>
+						<TextField
+							value={currentMission.description}
+							onChange={(e) => changeDescription(e)}
+							variant="outlined"
+							placeholder="Write description here..."
+							rows={5}
+							multiline
+							fullWidth
+							margin="dense"
+						/>
+					</div>
+				) : (
+					currentMission.description !== "" && (
+						<Typography variant="subtitle1" className={classes.description}>
+							{currentMission.description}
+						</Typography>
+					)
 				)}
 			</div>
 			<div className={classes.cardSection}>
 				<CardActions className={classes.cardActions}>
 					{!mission?.isStarted ? (
-						<Button onClick={() => startMission()}>Start</Button>
+						!editState ? (
+							<Button onClick={() => startMission()}>Start</Button>
+						) : (
+							<Button onClick={() => submitEdit()}>Confirm Edit</Button>
+						)
 					) : (
 						<>
 							<Button
@@ -203,9 +328,71 @@ const DELETE_MISSION_MUTATION = gql`
 	}
 `;
 
+const EDIT_MISSION = gql`
+	mutation editMission(
+		$skillId: String!
+		$missionId: String!
+		$description: String!
+		$title: String!
+	) {
+		editMission(
+			Data: {
+				skillId: $skillId
+				missionId: $missionId
+				description: $description
+				title: $title
+			}
+		) {
+			id
+			username
+			skills {
+				missions {
+					id
+					title
+					lastStartedAt
+					createdAt
+					startedAt
+					finishedAt
+					pausedAt
+					isStarted
+					isFinished
+					isPaused
+					timeSpent
+					description
+					log {
+						createdAt
+						description
+					}
+				}
+			}
+		}
+	}
+`;
+
 const START_MISSION = gql`
 	mutation startMission($skillId: String!, $missionId: String!) {
 		startMission(Data: { skillId: $skillId, missionId: $missionId }) {
+			id
+			username
+			skills {
+				id
+				missions {
+					id
+					isStarted
+					isPaused
+					isFinished
+					timeSpent
+					startedAt
+					lastStartedAt
+				}
+			}
+		}
+	}
+`;
+
+const RESET_MISSION = gql`
+	mutation resetMission($skillId: String!, $missionId: String!) {
+		resetMission(Data: { skillId: $skillId, missionId: $missionId }) {
 			id
 			username
 			skills {

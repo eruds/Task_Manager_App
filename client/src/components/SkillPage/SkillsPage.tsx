@@ -3,6 +3,8 @@ import { useQuery, gql } from "@apollo/client";
 import {
 	Button,
 	Container,
+	Drawer,
+	Divider,
 	Grid,
 	Tabs,
 	Tab,
@@ -14,6 +16,7 @@ import { skillsPageClasses } from "../styles/skillsPageClasses";
 import { generalClasses } from "../styles/general";
 import AddOrEditSkillForm from "./AddOrEditSkillForm";
 import SkillPanel from "./SkillPanel";
+import SkillPanelButton from "./SkillPanelButton";
 
 import { useModal } from "../../utils/hooks";
 import { AuthContext } from "../../context/auth";
@@ -33,11 +36,11 @@ export default function Skills() {
 	const { open, openModal, closeModal } = useModal();
 
 	// Tab Handler
-	const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+	const changeActive = (newActive: number) => {
 		if (data) {
-			setCurrentSkill(data.returnUserData.skills[newValue]);
+			setCurrentSkill(data.returnUserData.skills[newActive]);
 		}
-		setActive(newValue);
+		setActive(newActive);
 	};
 
 	// Fetching data
@@ -51,89 +54,89 @@ export default function Skills() {
 	});
 
 	const skills: Skill[] = loading ? [] : data.returnUserData.skills;
+
+	const skillLength = skills?.length === 0 ? 5 : skills?.length + 2;
 	useEffect(() => {
 		setCurrentSkill(skills[active]);
 	}, [skills]);
 
 	return (
-		<Container>
-			<Paper style={{ minHeight: "80vh" }} elevation={3}>
-				<Grid
-					container
-					spacing={4}
-					className={classes.main}
-					style={{ paddingLeft: "2rem" }}
+		<div style={{ minHeight: "80vh" }}>
+			<div className={classes.horizontalContainer}>
+				<div
+					className={classes.columnContainer}
+					style={{
+						borderRight: "1px solid rgba(0,0,0, 0.2)",
+						height: `${90 * skillLength}px`,
+						maxHeight: `100vh`,
+						flexBasis: "20%",
+						// overflowY: "scroll",
+						// "&::-webkit-scrollbar": {
+						// 	width: "200px",
+						// },
+					}}
 				>
-					<Grid item xs={3}>
-						<Tabs
-							value={active}
-							indicatorColor="primary"
-							textColor="secondary"
-							orientation="vertical"
-							variant="scrollable"
-							onChange={handleChange}
-							className={classes.tabs}
+					{loading ? (
+						<Button disabled className={classes.tab}>
+							No Skils Added Yet
+						</Button>
+					) : !loading ? (
+						skills.map((skill: any, index: number) => {
+							return (
+								<>
+									<SkillPanelButton
+										index={index}
+										isActive={index === active}
+										title={skill.title}
+										changeActive={changeActive}
+									/>
+									<Divider style={{ backgroundColor: "rgba(0,0,0,0.2)" }} />
+								</>
+							);
+						})
+					) : (
+						<Button
+							disabled
+							style={{
+								borderBottom: "1px solid rgba(0, 0, 0, 0.10)",
+								padding: "20px 0",
+							}}
 						>
-							{loading ? (
-								<Button disabled className={classes.tab}>
-									No Skils Added Yet
-								</Button>
-							) : !loading ? (
-								skills.map((skill: any, index: number) => {
-									return (
-										<Tab
-											key={skill.id}
-											label={skill.title}
-											value={index}
-											className={classes.tab}
-										/>
-									);
-								})
-							) : (
-								<Tab
-									label="Loading Skills..."
-									value={0}
-									style={{
-										borderBottom: "1px solid rgba(0, 0, 0, 0.10)",
-										padding: "20px 0",
-									}}
-								/>
-							)}
-							<Button
-								style={{
-									color: "grey",
-									marginTop: "auto",
-									padding: "20px 0",
-								}}
-								onClick={openModal}
-							>
-								Add New Skill
-							</Button>
-						</Tabs>
-						<AddOrEditSkillForm open={open} closeModal={closeModal} />
-					</Grid>
-					<Grid
-						container
-						item
-						xs={9}
-						direction="column"
+							Loading Skills...
+						</Button>
+					)}
+					<Button
 						style={{
-							justifyContent: loading ? "center" : "flex-start",
+							color: "grey",
+							marginTop: "auto",
+							padding: "20px 0",
 						}}
+						onClick={openModal}
 					>
-						{loading ? (
-							<div className={classes.noSkillFetched}>
-								<Typography variant="h4">There's Nothing Here!</Typography>
-								<Typography variant="h6">
-									Start Using The Skills Feature By Adding A New Skill!
-								</Typography>
-							</div>
-						) : (
-							data && <SkillPanel classes={classes} skill={currentSkill} />
-						)}
-					</Grid>
-				</Grid>
-			</Paper>
-		</Container>
+						Add New Skill
+					</Button>
+					<AddOrEditSkillForm open={open} closeModal={closeModal} />
+				</div>
+				<div
+					className={classes.columnContainer}
+					style={{
+						justifyContent: loading ? "center" : "flex-start",
+						padding: "3rem 5rem 2rem 3rem",
+						flexBasis: "80%",
+					}}
+				>
+					{loading ? (
+						<div className={classes.noSkillFetched}>
+							<Typography variant="h4">There's Nothing Here!</Typography>
+							<Typography variant="h6">
+								Start Using The Skills Feature By Adding A New Skill!
+							</Typography>
+						</div>
+					) : (
+						data && <SkillPanel classes={classes} skill={currentSkill} />
+					)}
+				</div>
+			</div>
+		</div>
 	);
 }

@@ -25,6 +25,7 @@ export default function Navbar() {
 			position={isHomepage ? "absolute" : "static"}
 			color={isHomepage ? "transparent" : "primary"}
 			className={classes.navbar}
+			style={{ boxShadow: "none" }}
 		>
 			<Container className={classes.container}>
 				<Toolbar className={classes.navToolbar}>
